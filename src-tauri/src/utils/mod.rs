@@ -17,7 +17,7 @@ pub fn read_file(path: &Path) -> Result<HashMap<String, Note>, Box<dyn std::erro
         .expect("Cannot open file");
 
     let metadata = file.metadata()?;
-    println!("{:?}", metadata.len());
+    println!("Metadata length: {:?}", metadata.len());
     if metadata.len() == 1 || metadata.len() == 0 {
         let data: HashMap<String, Note> = HashMap::new();
         return Ok(data);

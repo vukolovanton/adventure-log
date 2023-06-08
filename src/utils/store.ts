@@ -1,9 +1,14 @@
 import { reactive } from 'vue'
+import { Note } from './utils'
 
-interface Store {
-  noteId: string,
+export interface Store {
+  lastUpdate: number,
+  note: Note | null,
+  notes: Note[]
 }
 
 export const store: Store = reactive({
-  noteId: '',
+  lastUpdate: 0,
+  note: null,
+  notes: []
 })

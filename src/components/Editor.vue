@@ -1,34 +1,70 @@
 <template>
   <div class="Editor">
-    <span>{{ store.noteId }}</span>
     <button @click="handleSave">Save</button>
-    <input v-model="title" />
-    <textarea class="container" v-model="description">
-
-  </textarea>
+    <input v-model="state.title" />
+    <textarea class="container" v-model="state.description" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/tauri";
-import { onUpdated, ref } from 'vue';
-import { store } from '../utils/store';
+import { reactive, ref, watch } from 'vue';
+import { useRoute } from 'vue-router'
+import { store, Store } from '../utils/store';
+import { Note } from "../utils/utils";
 
-const description = ref("");
-const title = ref("");
+interface State {
+  editedNote: Note | null,
+  title: string,
+  description: string,
+}
+
+// const description = ref("");
+// const title = ref("");
+const state: State = reactive({
+  editedNote: null,
+  title: "",
+  description: "",
+})
+
+const route = useRoute()
 
 async function handleSave() {
   await invoke("save_note", {
-    id: Date.now().toString(),
-    title: title.value,
-    description: description.value,
+    id: store.note ? store.note.id : Date.now().toString(),
+    title: state.title,
+    description: state.description,
     tags: [],
   })
+
+  store.lastUpdate = Date.now();
 }
 
-onUpdated(() => {
-  console.log(store)
-})
+function findAndSetNote(newId: string) {
+  const note = store.notes.find(note => note.id === newId);
+  if (note) {
+    state.editedNote = note;
+    state.description = note.description;
+    state.title = note.title;
+  }
+}
+
+function setDefaultNote() {
+  state.editedNote = null;
+  state.description = ""
+  state.title = ""
+}
+
+watch(
+  () => route.params.id,
+  async newId => {
+    if (newId) {
+      findAndSetNote(newId as string);
+    } else {
+      setDefaultNote();
+    }
+  }
+)
 
 </script>
 

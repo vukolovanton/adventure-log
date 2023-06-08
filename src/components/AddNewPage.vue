@@ -5,9 +5,13 @@
 </template>
 
 <script setup lang="ts">
-import { invoke } from "@tauri-apps/api/tauri";
+import { useRouter } from 'vue-router';
+import { store } from '../utils/store';
 
-async function greet() {
-    greetMsg.value = await invoke("greet", { name: name.value });
+const router = useRouter();
+
+function handleAddNew() {
+    store.note = null;
+    router.push(`/editor/`)
 }
 </script>

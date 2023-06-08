@@ -6,7 +6,7 @@ import Editor from './components/Editor.vue';
 <template>
   <div class="container">
     <Sidebar />
-    <Editor />
+    <RouterView />
   </div>
 </template>
 

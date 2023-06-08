@@ -5,6 +5,8 @@ use crate::utils::{read_file, update_file, write_file, Note};
 use std::collections::HashMap;
 use std::path::Path;
 
+const PATH: &str = "../data.json";
+
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -13,7 +15,7 @@ fn greet(name: &str) -> String {
 
 #[tauri::command]
 fn get_all_notes() -> HashMap<String, Note> {
-    let path = Path::new("./files/data.json");
+    let path = Path::new(PATH);
     let data = read_file(path);
 
     let user_notes = match data {
@@ -26,7 +28,7 @@ fn get_all_notes() -> HashMap<String, Note> {
 
 #[tauri::command]
 fn save_note(id: String, title: String, description: String, tags: Vec<String>) {
-    let path = Path::new("./files/data.json");
+    let path = Path::new(PATH);
     let note = Note {
         id,
         title,
@@ -35,7 +37,6 @@ fn save_note(id: String, title: String, description: String, tags: Vec<String>) 
     };
 
     let data = read_file(path);
-    println!("{:?}", data);
 
     let mut user_notes = match data {
         Ok(d) => d,

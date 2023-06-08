@@ -9,27 +9,39 @@
 </template>
 
 <script lang="ts" setup>
+import { useRouter } from 'vue-router';
 import { invoke } from "@tauri-apps/api/tauri";
-import { reactive, onBeforeMount } from 'vue';
+import { reactive, onBeforeMount, watch } from 'vue';
 import { Note, NoteStorage } from '../utils/utils';
 import { store } from '../utils/store';
 
 const list: Note[] = reactive([]);
+const router = useRouter();
 
-async function requestNotesLits() {
+async function requestNotesList() {
   const data: NoteStorage = await invoke("get_all_notes");
   const parsed = Object.values(data).map(v => v);
-  list.push(...parsed);
+  list.length = 0;
+  list.push(...parsed)
+  store.notes = parsed;
 }
 
 function handleNoteClick(note: Note) {
-  store.noteId = note.id;
+  store.note = note;
+  router.push({
+    path: `/editor/${note.id}`,
+  });
 }
 
 onBeforeMount(() => {
-  requestNotesLits();
+  requestNotesList();
 })
 
+watch(() => store.lastUpdate, (nextValue, prevValue) => {
+  if (nextValue !== prevValue) {
+    requestNotesList()
+  }
+})
 </script>
 
 <style></style>
