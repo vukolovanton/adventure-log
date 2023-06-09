@@ -1,7 +1,11 @@
 <template>
   <div>
+    <div>
+      <span v-for="filter in store.filteredTags">#{{ filter }}</span>
+      <button @click="handleClearFilters">Clear filters</button>
+    </div>
     <ul>
-      <li v-for="note in list" @click="handleNoteClick(note)">
+      <li v-for="note in state.notes" @click="handleNoteClick(note)">
         <a>
           {{ note.title }}
         </a>
@@ -17,14 +21,19 @@ import { reactive, onBeforeMount, watch } from 'vue';
 import { Note, NoteStorage } from '../utils/utils';
 import { store } from '../utils/store';
 
-const list: Note[] = reactive([]);
+interface IState {
+  notes: Note[],
+}
+const state: IState = reactive({
+  notes: [],
+})
 const router = useRouter();
 
 async function requestNotesList() {
   const data: NoteStorage = await invoke("get_all_notes");
   const parsed = Object.values(data).map(v => v);
-  list.length = 0;
-  list.push(...parsed)
+  state.notes.length = 0;
+  state.notes.push(...parsed)
   store.notes = parsed;
 }
 
@@ -33,6 +42,11 @@ function handleNoteClick(note: Note) {
   router.push({
     path: `/editor/${note.id}`,
   });
+}
+
+function handleClearFilters() {
+  store.filteredTags = [];
+  requestNotesList()
 }
 
 onBeforeMount(() => {
@@ -44,6 +58,17 @@ watch(() => store.lastUpdate, (nextValue, prevValue) => {
     requestNotesList()
   }
 })
+
+watch(() => store.filteredTags, filteredTags => {
+  const filtered = state.notes.filter(n => {
+    const t = n.tags.some(el => filteredTags.includes(el));
+    return t;
+  });
+  state.notes = filtered;
+},
+  {
+    deep: true
+  })
 </script>
 
 <style scoped>

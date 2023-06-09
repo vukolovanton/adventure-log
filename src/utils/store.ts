@@ -5,10 +5,12 @@ export interface Store {
   lastUpdate: number,
   note: Note | null,
   notes: Note[]
+  filteredTags: string[]
 }
 
 export const store: Store = reactive({
   lastUpdate: 0,
   note: null,
-  notes: []
+  notes: [],
+  filteredTags: []
 })

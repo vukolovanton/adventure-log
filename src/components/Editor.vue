@@ -8,7 +8,7 @@
       <input v-model="state.tag" />
       <button @click="handleAddNewTag">+</button>
       <div class="tags-container">
-        <span v-for="tag in state.tags">#{{ tag }}</span>
+        <span v-for="tag in state.tags" @click="handleTagClick(tag)">#{{ tag }}</span>
       </div>
     </div>
   </div>
@@ -40,8 +40,13 @@ const state: State = reactive({
 const route = useRoute()
 
 function handleAddNewTag() {
-  state.tags.push(state.tag)
+  state.tags.push(state.tag);
   state.tag = "";
+  handleSave();
+}
+
+function handleTagClick(tag: string) {
+  store.filteredTags.push(tag);
 }
 
 async function handleSave() {
