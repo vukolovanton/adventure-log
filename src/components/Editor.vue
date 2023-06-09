@@ -1,14 +1,15 @@
 <template>
   <div class="Editor">
-    <button @click="handleSave">Save</button>
     <input v-model="state.title" />
+    <button @click="handleSave">Save</button>
+
     <textarea class="container" v-model="state.description" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/tauri";
-import { reactive, ref, watch } from 'vue';
+import { reactive, watch, onBeforeUnmount, onMounted } from 'vue';
 import { useRoute } from 'vue-router'
 import { store, Store } from '../utils/store';
 import { Note } from "../utils/utils";
@@ -57,12 +58,15 @@ function setDefaultNote() {
 
 watch(
   () => route.params.id,
-  async newId => {
+  async (newId) => {
     if (newId) {
       findAndSetNote(newId as string);
     } else {
       setDefaultNote();
     }
+  },
+  {
+    immediate: true
   }
 )
 
@@ -72,7 +76,7 @@ watch(
 .container {
   width: 100%;
   height: 100%;
-  border: 1px solid grey;
+  border: none;
 }
 
 

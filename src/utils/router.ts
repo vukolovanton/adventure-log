@@ -12,6 +12,7 @@ const routes = [
   {
     path: '/editor/:id?',
     name: 'editor',
+    sensitive: true,
     component: Editor,
   }
 ];

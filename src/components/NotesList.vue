@@ -2,7 +2,9 @@
   <div>
     <ul>
       <li v-for="note in list" @click="handleNoteClick(note)">
-        {{ note.title }}
+        <a>
+          {{ note.title }}
+        </a>
       </li>
     </ul>
   </div>
@@ -44,4 +46,12 @@ watch(() => store.lastUpdate, (nextValue, prevValue) => {
 })
 </script>
 
-<style></style>
+<style scoped>
+li {
+  cursor: pointer;
+}
+
+a:hover {
+  background-color: palegreen;
+}
+</style>
