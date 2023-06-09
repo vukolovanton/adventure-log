@@ -3,7 +3,14 @@
     <input v-model="state.title" />
     <button @click="handleSave">Save</button>
 
-    <textarea class="container" v-model="state.description" />
+    <textarea class="text-container" v-model="state.description" />
+    <div>
+      <input v-model="state.tag" />
+      <button @click="handleAddNewTag">+</button>
+      <div class="tags-container">
+        <span v-for="tag in state.tags">#{{ tag }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -18,24 +25,31 @@ interface State {
   editedNote: Note | null,
   title: string,
   description: string,
+  tag: string,
+  tags: string[]
 }
 
-// const description = ref("");
-// const title = ref("");
 const state: State = reactive({
   editedNote: null,
   title: "",
   description: "",
+  tag: '',
+  tags: []
 })
 
 const route = useRoute()
+
+function handleAddNewTag() {
+  state.tags.push(state.tag)
+  state.tag = "";
+}
 
 async function handleSave() {
   await invoke("save_note", {
     id: store.note ? store.note.id : Date.now().toString(),
     title: state.title,
     description: state.description,
-    tags: [],
+    tags: state.tags,
   })
 
   store.lastUpdate = Date.now();
@@ -47,6 +61,7 @@ function findAndSetNote(newId: string) {
     state.editedNote = note;
     state.description = note.description;
     state.title = note.title;
+    state.tags = note.tags;
   }
 }
 
@@ -54,6 +69,8 @@ function setDefaultNote() {
   state.editedNote = null;
   state.description = ""
   state.title = ""
+  state.tag = ""
+  state.tags = []
 }
 
 watch(
@@ -73,10 +90,15 @@ watch(
 </script>
 
 <style scoped>
-.container {
+.text-container {
   width: 100%;
-  height: 100%;
+  height: 85%;
   border: none;
+}
+
+.tags-container {
+  display: flex;
+  gap: 0.5em;
 }
 
 
