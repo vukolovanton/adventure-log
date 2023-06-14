@@ -51,9 +51,26 @@ fn save_note(id: String, title: String, description: String, tags: Vec<String>) 
     };
 }
 
+#[tauri::command]
+fn delete_note(id: String) {
+    let mut notes = get_all_notes();
+    notes.remove(&id);
+
+    let path = Path::new(PATH);
+    match write_file(path, &notes) {
+        Ok(_) => (),
+        Err(error) => panic!("Problem writting the file: {:?}", error),
+    };
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, save_note, get_all_notes])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            save_note,
+            get_all_notes,
+            delete_note
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

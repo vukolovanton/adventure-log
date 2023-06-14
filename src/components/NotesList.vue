@@ -5,10 +5,11 @@
       <button @click="handleClearFilters">Clear filters</button>
     </div>
     <ul>
-      <li v-for="note in state.notes" @click="handleNoteClick(note)">
-        <a>
+      <li v-for="note in state.notes">
+        <a @click="handleNoteClick(note)">
           {{ note.title }}
         </a>
+        <button @click="handleDeleteNote(note)">X</button>
       </li>
     </ul>
   </div>
@@ -47,6 +48,13 @@ function handleNoteClick(note: Note) {
 function handleClearFilters() {
   store.filteredTags = [];
   requestNotesList()
+}
+
+async function handleDeleteNote(note: Note) {
+  await invoke("delete_note", {
+    id: note.id
+  });
+  store.lastUpdate = Date.now();
 }
 
 onBeforeMount(() => {
