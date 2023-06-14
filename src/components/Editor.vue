@@ -3,7 +3,7 @@
     <input v-model="state.title" />
     <button @click="handleSave">Save</button>
 
-    <textarea class="text-container" v-model="state.description" />
+    <textarea class="text-container" v-model="state.description" autofocus="true" spellcheck="true" />
     <div>
       <input v-model="state.tag" />
       <button @click="handleAddNewTag">+</button>
@@ -50,13 +50,18 @@ function handleTagClick(tag: string) {
 }
 
 async function handleSave() {
-  await invoke("save_note", {
-    id: store.note ? store.note.id : Date.now().toString(),
+  const id = Date.now().toString();
+  const note = {
+    id: store.note ? store.note.id : id,
     title: state.title,
     description: state.description,
     tags: state.tags,
+  }
+  await invoke("save_note", {
+    ...note,
   })
 
+  store.note = note;
   store.lastUpdate = Date.now();
 }
 
@@ -99,6 +104,7 @@ watch(
   width: 100%;
   height: 85%;
   border: none;
+  resize: none;
 }
 
 .tags-container {

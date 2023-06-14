@@ -2,10 +2,10 @@
   <div>
     <div>
       <span v-for="filter in store.filteredTags">#{{ filter }}</span>
-      <button @click="handleClearFilters">Clear filters</button>
+      <button v-if="store.filteredTags.length > 0" @click="handleClearFilters">Clear filters</button>
     </div>
     <ul>
-      <li v-for="note in state.notes">
+      <li v-for="note in state.notes" :class="{ 'active-note': store.note?.id === note.id }">
         <a @click="handleNoteClick(note)">
           {{ note.title }}
         </a>
@@ -24,9 +24,11 @@ import { store } from '../utils/store';
 
 interface IState {
   notes: Note[],
+  isActive: boolean,
 }
 const state: IState = reactive({
   notes: [],
+  isActive: false,
 })
 const router = useRouter();
 
@@ -86,5 +88,9 @@ li {
 
 a:hover {
   background-color: palegreen;
+}
+
+.active-note {
+  font-weight: bold;
 }
 </style>
