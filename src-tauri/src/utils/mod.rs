@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::io::{self, BufWriter, Read, Write};
+use std::io::{self, Read, Write};
 use std::{fs::File, path::Path};
 
 #[derive(Debug, Serialize, Deserialize)]

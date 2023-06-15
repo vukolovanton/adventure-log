@@ -56,6 +56,14 @@ const state: State = reactive({
 const route = useRoute();
 const router = useRouter();
 
+function stateCleanup() {
+  state.editedNote = null;
+  state.title = '';
+  state.description = "";
+  state.tag = "";
+  state.tags = [];
+}
+
 function handleAddNewTag() {
   state.tags.push(state.tag);
   state.tag = "";
@@ -63,6 +71,11 @@ function handleAddNewTag() {
 }
 
 function handleTagClick(tag: string) {
+  const isAlreadyAdded = store.filteredTags.includes(tag);
+  if (isAlreadyAdded) {
+    return;
+  }
+
   store.filteredTags.push(tag);
 }
 
@@ -73,11 +86,16 @@ async function handleDeleteNote() {
     });
     store.lastUpdate = Date.now();
     store.note = null;
-    router.push(`/editor`)
+    stateCleanup();
+    router.push(`/editor`);
   }
 }
 
 async function handleSave() {
+  if (!state.title && !state.description) {
+    return;
+  }
+
   const id = Date.now().toString();
   const note = {
     id: store.note ? store.note.id : id,
@@ -90,6 +108,7 @@ async function handleSave() {
   })
 
   store.note = note;
+  state.editedNote = note;
   store.lastUpdate = Date.now();
 }
 
