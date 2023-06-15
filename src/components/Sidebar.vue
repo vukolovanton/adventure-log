@@ -1,5 +1,5 @@
 <template>
-  <div class="Control">
+  <div class="Sidebar">
     <AddNewPage />
     <NotesList />
   </div>
@@ -12,7 +12,10 @@ import NotesList from './NotesList.vue';
 </script>
 
 <style>
-.Control {
-  grid-area: Control;
+.Sidebar {
+  grid-area: Sidebar;
+  background-color: var(--alt-background-color);
+  min-height: 100vh;
+  padding: var(--padding-inner);
 }
 </style>

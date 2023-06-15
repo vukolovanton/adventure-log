@@ -1,17 +1,50 @@
+@import url('./styles/button.css');
+
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-family: Alice, Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: var(--font-size);
   line-height: 24px;
   font-weight: 400;
 
-  color: #0f0f0f;
-  background-color: #f6f6f6;
+  color: var(--text-color);
+  background-color: var(--background-color);
 
+  font-family: Alice, Avenir, Helvetica, Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  --accent-color: bisque;
+  --big-gap: 1.5rem;
+  --padding-inner: 1rem;
+  --text-color: #0f0f0f;
+  --background-color: #f6f6f6;
+  --alt-background-color: #f0f0f0;
+  --alt-text-color: white;
+  --font-size: 16px;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Alice, Avenir, Helvetica, Arial, sans-serif;
+}
 
+input,
+textarea {
+  font-size: var(--font-size);
+
+}
+
+@font-face {
+  font-family: 'Alice';
+  font-weight: 400;
+  font-style: normal;
+  font-display: auto;
+  unicode-range: U+000-5FF;
+  src: local('Alice'),
+    url('./assets/Alice.ttf') format('truetype');
+}

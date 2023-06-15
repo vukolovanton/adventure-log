@@ -15,17 +15,15 @@ import Editor from './components/Editor.vue';
   display: grid;
   grid-template-columns: 0.5fr 1.5fr;
   grid-template-rows: 1fr;
-  gap: 0px 1em;
+  gap: 0px 1rem;
   grid-auto-flow: row;
   justify-items: stretch;
   grid-template-areas:
-    "Control Editor";
-
-  height: 85vh;
-  padding: 0.5em;
+    "Sidebar Editor";
 }
 
 .Editor {
   grid-area: Editor;
+  max-height: 70vh;
 }
 </style>

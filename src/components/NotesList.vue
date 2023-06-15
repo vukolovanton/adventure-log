@@ -1,21 +1,24 @@
 <template>
   <div>
-    <div>
+    <div class="applied-filters">
       <span v-for="filter in store.filteredTags">#{{ filter }}</span>
-      <button v-if="store.filteredTags.length > 0" @click="handleClearFilters">Clear filters</button>
+      <button v-if="store.filteredTags.length > 0" @click="handleClearFilters">
+        <Xmark />
+      </button>
     </div>
     <ul>
-      <li v-for="note in state.notes" :class="{ 'active-note': store.note?.id === note.id }">
-        <a @click="handleNoteClick(note)">
+      <li v-for="note in state.notes" :class="{ 'active-note': store.note?.id === note.id }"
+        @click="handleNoteClick(note)">
+        <a>
           {{ note.title }}
         </a>
-        <button @click="handleDeleteNote(note)">X</button>
       </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts" setup>
+import Xmark from './icons/Xmark.vue';
 import { useRouter } from 'vue-router';
 import { invoke } from "@tauri-apps/api/tauri";
 import { reactive, onBeforeMount, watch } from 'vue';
@@ -52,13 +55,6 @@ function handleClearFilters() {
   requestNotesList()
 }
 
-async function handleDeleteNote(note: Note) {
-  await invoke("delete_note", {
-    id: note.id
-  });
-  store.lastUpdate = Date.now();
-}
-
 onBeforeMount(() => {
   requestNotesList();
 })
@@ -84,13 +80,31 @@ watch(() => store.filteredTags, filteredTags => {
 <style scoped>
 li {
   cursor: pointer;
+  padding: 0.1rem;
+  opacity: 0.6;
 }
 
-a:hover {
-  background-color: palegreen;
+li:hover {
+  text-decoration: underline;
+  text-decoration-color: cadetblue;
 }
 
 .active-note {
-  font-weight: bold;
+  text-decoration-line: underline;
+  opacity: 1;
+}
+
+ul {
+  max-height: 90vh;
+  overflow: scroll;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.applied-filters {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
 }
 </style>
