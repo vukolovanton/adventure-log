@@ -1,7 +1,7 @@
 <template>
     <div class="controls">
-        <button @click="handleAddNew" class="main">Add New</button>
-        <button @click="handleGoHome" class="settings">
+        <button aria-label="Add new note" @click="handleAddNew" class="main">Add New</button>
+        <button aria-label="Settings" @click="handleGoHome" class="settings">
             <Gear />
         </button>
     </div>

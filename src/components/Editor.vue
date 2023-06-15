@@ -1,22 +1,19 @@
 <template>
   <div class="Editor">
     <div class="editor-header">
-      <input v-model="state.title" />
+      <input v-model="state.title" @keyup="onKeyUp" />
       <div class="editor-actions">
-        <button class="delete" v-if="state.editedNote?.id" @click="handleDeleteNote">
+        <button aria-label="Delete" class="delete" v-if="state.editedNote?.id" @click="handleDeleteNote">
           <Delete />
-        </button>
-        <button class="save" @click="handleSave">
-          <Check />
         </button>
       </div>
     </div>
 
-    <textarea class="text-container" v-model="state.description" autofocus="true" spellcheck="true" />
+    <textarea class="text-container" v-model="state.description" autofocus="true" spellcheck="true" @keyup="onKeyUp" />
     <div>
       <div class="editor-actions">
         <input v-model="state.tag" />
-        <button @click="handleAddNewTag">
+        <button aria-label="Add new tag" @click="handleAddNewTag">
           <Tag />
         </button>
       </div>
@@ -29,11 +26,10 @@
 
 <script setup lang="ts">
 import Delete from './icons/Delete.vue';
-import Check from './icons/Check.vue';
 import Tag from './icons/Tag.vue';
 import { invoke } from "@tauri-apps/api/tauri";
-import { reactive, watch, onBeforeUnmount, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router'
+import { reactive, watch } from 'vue';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { store, Store } from '../utils/store';
 import { Note } from "../utils/utils";
 
@@ -42,7 +38,8 @@ interface State {
   title: string,
   description: string,
   tag: string,
-  tags: string[]
+  tags: string[],
+  typingTimer: any
 }
 
 const state: State = reactive({
@@ -50,7 +47,8 @@ const state: State = reactive({
   title: "",
   description: "",
   tag: '',
-  tags: []
+  tags: [],
+  typingTimer: null,
 })
 
 const route = useRoute();
@@ -130,6 +128,11 @@ function setDefaultNote() {
   state.tags = []
 }
 
+function onKeyUp() {
+  clearTimeout(state.typingTimer);
+  state.typingTimer = setTimeout(handleSave, 500);
+}
+
 watch(
   () => route.params.id,
   async (newId) => {
@@ -143,6 +146,10 @@ watch(
     immediate: true
   }
 )
+
+onBeforeRouteUpdate(() => {
+  clearTimeout(state.typingTimer);
+})
 
 </script>
 
@@ -180,5 +187,6 @@ watch(
 
 .tags-container span {
   cursor: pointer;
+  opacity: 0.6;
 }
 </style>

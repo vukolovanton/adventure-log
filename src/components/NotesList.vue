@@ -2,7 +2,7 @@
   <div>
     <div class="applied-filters">
       <span v-for="filter in store.filteredTags">#{{ filter }}</span>
-      <button v-if="store.filteredTags.length > 0" @click="handleClearFilters">
+      <button aria-label="Clear filters" v-if="store.filteredTags.length > 0" @click="handleClearFilters">
         <Xmark />
       </button>
     </div>
