@@ -19,11 +19,14 @@
   --accent-color: bisque;
   --big-gap: 1.5rem;
   --padding-inner: 1rem;
-  --text-color: #0f0f0f;
+  --text-color: ##292929;
   --background-color: #f6f6f6;
   --alt-background-color: #f0f0f0;
   --alt-text-color: white;
   --font-size: 16px;
+  --blue-color: #603FE3;
+  --yellow-color: #FFCD4D;
+  --red-color: #EC5555;
 }
 
 * {
