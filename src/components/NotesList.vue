@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="applied-filters">
-      <span v-for="filter in store.filteredTags">#{{ filter }}</span>
+      <span class="tag" v-for="filter in store.filteredTags">#{{ filter }}</span>
       <button aria-label="Clear filters" v-if="store.filteredTags.length > 0" @click="handleClearFilters">
         <Xmark />
       </button>
@@ -106,5 +106,10 @@ ul {
   display: flex;
   gap: 0.3rem;
   flex-wrap: wrap;
+  margin-bottom: var(--big-gap);
+}
+
+.tag {
+  font-size: 12px;
 }
 </style>

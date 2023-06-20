@@ -29,6 +29,11 @@ button:hover {
     opacity: 0.2;
 }
 
+.mini {
+    font-size: 10px;
+    padding: 3px 7px;
+}
+
 .delete:hover {
     opacity: 1;
     transition: opacity ease 0.2s;

@@ -18,7 +18,12 @@
         </button>
       </div>
       <div class="tags-container">
-        <span v-for="tag in state.tags" @click="handleTagClick(tag)">#{{ tag }}</span>
+        <div v-for="tag in state.tags" class="tags-inner-container">
+          <span @click="handleTagClick(tag)">#{{ tag }}</span>
+          <button class="delete-tag delete mini" @click="handleDeleteTag(tag)">
+            <Delete />
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -67,6 +72,8 @@ function handleAddNewTag() {
   state.tag = "";
   handleSave();
 }
+
+function handleDeleteTag(tag: string) { }
 
 function handleTagClick(tag: string) {
   const isAlreadyAdded = store.filteredTags.includes(tag);
@@ -188,5 +195,19 @@ onBeforeRouteUpdate(() => {
 .tags-container span {
   cursor: pointer;
   opacity: 0.6;
+}
+
+.delete-tag {
+  display: none;
+}
+
+.tags-inner-container {
+  display: flex;
+  align-items: center;
+}
+
+.tags-inner-container:hover>.delete-tag {
+  display: block;
+  margin-left: 0.2rem;
 }
 </style>
