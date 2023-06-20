@@ -73,7 +73,11 @@ function handleAddNewTag() {
   handleSave();
 }
 
-function handleDeleteTag(tag: string) { }
+function handleDeleteTag(tag: string) {
+  const filtered = state.tags.filter(t => t !== tag);
+  state.tags = filtered;
+  handleSave();
+}
 
 function handleTagClick(tag: string) {
   const isAlreadyAdded = store.filteredTags.includes(tag);
