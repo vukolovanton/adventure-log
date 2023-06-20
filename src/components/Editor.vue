@@ -12,7 +12,7 @@
     <textarea class="text-container" v-model="state.description" autofocus="true" spellcheck="true" @keyup="onKeyUp" />
     <div>
       <div class="editor-actions">
-        <input v-model="state.tag" />
+        <input v-model="state.tag" @keyup.enter="handleAddNewTag" />
         <button aria-label="Add new tag" @click="handleAddNewTag">
           <Tag />
         </button>

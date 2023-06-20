@@ -39,8 +39,9 @@ async function requestNotesList() {
   const data: NoteStorage = await invoke("get_all_notes");
   const parsed = Object.values(data).map(v => v);
   state.notes.length = 0;
-  state.notes.push(...parsed)
+  state.notes.push(...parsed);
   store.notes = parsed;
+  return true;
 }
 
 function handleNoteClick(note: Note) {
@@ -55,22 +56,29 @@ function handleClearFilters() {
   requestNotesList()
 }
 
-onBeforeMount(() => {
-  requestNotesList();
-})
-
-watch(() => store.lastUpdate, (nextValue, prevValue) => {
-  if (nextValue !== prevValue) {
-    requestNotesList()
-  }
-})
-
-watch(() => store.filteredTags, filteredTags => {
+function updateNotesBasedOnFilter(filteredTags: string[]) {
   const filtered = state.notes.filter(n => {
     const t = n.tags.some(el => filteredTags.includes(el));
     return t;
   });
   state.notes = filtered;
+}
+
+onBeforeMount(() => {
+  requestNotesList();
+})
+
+watch(() => store.lastUpdate, async (nextValue, prevValue) => {
+  if (nextValue !== prevValue) {
+    await requestNotesList();
+    if (store.filteredTags.length > 0) {
+      updateNotesBasedOnFilter(store.filteredTags);
+    }
+  }
+})
+
+watch(() => store.filteredTags, newFilteredTags => {
+  updateNotesBasedOnFilter(newFilteredTags);
 },
   {
     deep: true
