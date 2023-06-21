@@ -1,48 +1,50 @@
 button {
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 6px 14px;
-    border-radius: 6px;
-    color: var(--alt-text-color);
-    background: #fff;
-    border: none;
-    box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1);
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: var(--text-color);
+  background: #fff;
+  border: none;
+  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
 button:focus {
-    box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
-    outline: 0;
+  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1),
+    0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  outline: 0;
 }
 
 button:hover {
-    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
 .delete {
-    background: var(--red-color);
-    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
-    opacity: 0.2;
+  background: var(--red-color);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+  opacity: 0.2;
 }
 
 .mini {
-    font-size: 10px;
-    padding: 3px 7px;
+  font-size: 10px;
+  padding: 3px 7px;
 }
 
 .delete:hover {
-    opacity: 1;
-    transition: opacity ease 0.2s;
+  opacity: 1;
+  transition: opacity ease 0.2s;
 }
 
 .settings {
-    background: none;
+  background: none;
 }
 
 .main {
-    background: var(--blue-color);
+  background: var(--blue-color);
+  color: var(--alt-text-color);
 }

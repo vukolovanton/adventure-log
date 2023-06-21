@@ -1,12 +1,15 @@
 <template>
   <div>
     <FilteredTags @handle-clear-filters="handleClearFilters" />
+    <button @click="handleCreateNewFolder">new folder</button>
 
-    <template v-for="(value, name) in state.notesWithFolders">
+    <template v-for="(value, folder) in state.notesWithFolders">
       <details open>
-        <summary>{{ name }}</summary>
+        <summary>
+          {{ folder }}
+        </summary>
         <div
-          :id="name.toString()"
+          :data-folder="folder.toString()"
           @drop.prevent="onDrop"
           @dragenter.prevent
           @dragover.prevent
@@ -34,7 +37,7 @@
     <ul>
       <template v-for="note in state.notes">
         <li
-          v-if="note.folder_id === ''"
+          v-if="note.folder === ''"
           @dragstart="(event) => onDragStart(event, note.id)"
           :id="note.id"
           draggable="true"
@@ -66,23 +69,32 @@ interface IState {
   notes: Note[];
   notesWithFolders: NotesFolder;
   isActive: boolean;
+  draggedNoteId: string;
 }
-
-const draggedNoteId = ref("");
 
 const state: IState = reactive({
   notes: [],
   notesWithFolders: {},
   isActive: false,
+  draggedNoteId: "",
 });
 const router = useRouter();
 
-async function onDrop(event: DragEvent) {
-  const folderId = (event.currentTarget as HTMLElement).id;
+function handleCreateNewFolder() {
+  function getRandomInt() {
+    return Math.floor(Math.random() * 100);
+  }
+  state.notesWithFolders[`folder_${getRandomInt()}`] = [];
+}
 
-  const updatedNotes: NoteStorage = await invoke("update_note_folder_id", {
-    noteId: draggedNoteId.value,
-    folderId: folderId,
+async function onDrop(event: DragEvent) {
+  const folder = (event.currentTarget as HTMLElement).getAttribute(
+    "data-folder"
+  );
+
+  const updatedNotes: NoteStorage = await invoke("update_note_folder", {
+    noteId: state.draggedNoteId,
+    folder: folder,
   });
 
   parseAndSaveNotesToStore(updatedNotes);
@@ -90,20 +102,20 @@ async function onDrop(event: DragEvent) {
 }
 
 function onDragStart(event: DragEvent, id: string) {
-  draggedNoteId.value = id;
+  state.draggedNoteId = id;
 }
 
 function groupNotesByFolder(notes: Note[]) {
   const groupedByFolders: NotesFolder = {};
   notes.forEach((note) => {
-    if (note.folder_id !== "") {
-      const folderId = note.folder_id.trim();
-      const isFolderArrayExists = groupedByFolders[folderId];
+    if (note.folder !== "") {
+      const folder = note.folder.trim();
+      const isFolderArrayExists = groupedByFolders[folder];
       if (isFolderArrayExists) {
-        groupedByFolders[folderId].push(note);
+        groupedByFolders[folder].push(note);
       } else {
-        groupedByFolders[folderId] = [];
-        groupedByFolders[folderId].push(note);
+        groupedByFolders[folder] = [];
+        groupedByFolders[folder].push(note);
       }
     }
   });
@@ -120,6 +132,7 @@ function parseAndSaveNotesToStore(data: NoteStorage) {
 
 async function requestNotesList() {
   const data: NoteStorage = await invoke("get_all_notes");
+  console.log(data);
 
   parseAndSaveNotesToStore(data);
   groupNotesByFolder(state.notes);

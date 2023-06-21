@@ -1,11 +1,11 @@
 export interface Note {
-    id: string,
-    title: string,
-    description: string,
-    tags: string[],
-    folder_id: string,
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  folder: string;
 }
 
 export interface NoteStorage {
-    [key: string]: Note;
+  [key: string]: Note;
 }

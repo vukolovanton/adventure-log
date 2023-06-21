@@ -27,14 +27,14 @@ fn get_all_notes() -> HashMap<String, Note> {
 }
 
 #[tauri::command]
-fn save_note(id: String, title: String, description: String, tags: Vec<String>, folder_id: String) {
+fn save_note(id: String, title: String, description: String, tags: Vec<String>, folder: String) {
     let path = Path::new(PATH);
     let note = Note {
         id,
         title,
         description,
         tags,
-        folder_id,
+        folder,
     };
 
     let data = read_file(path);
@@ -64,7 +64,7 @@ fn delete_note(id: String) {
 }
 
 #[tauri::command]
-fn update_note_folder_id(note_id: String, folder_id: String) -> HashMap<String, Note> {
+fn update_note_folder(note_id: String, folder: String) -> HashMap<String, Note> {
     let mut notes = get_all_notes();
     let note = notes.get(&note_id).expect("Error");
 
@@ -72,7 +72,7 @@ fn update_note_folder_id(note_id: String, folder_id: String) -> HashMap<String, 
         id: String::from(&note.id),
         title: String::from(&note.title),
         description: String::from(&note.description),
-        folder_id,
+        folder,
         tags: note.tags.clone(),
     };
 
@@ -93,7 +93,7 @@ fn main() {
             save_note,
             get_all_notes,
             delete_note,
-            update_note_folder_id
+            update_note_folder
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
