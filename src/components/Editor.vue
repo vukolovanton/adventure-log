@@ -136,6 +136,7 @@ async function handleSave() {
 
 function findAndSetNote(newId: string) {
   const note = store.notes.find((note) => note.id === newId);
+  console.log(note);
   if (note) {
     state.editedNote = note;
     state.description = note.description;

@@ -132,7 +132,6 @@ function parseAndSaveNotesToStore(data: NoteStorage) {
 
 async function requestNotesList() {
   const data: NoteStorage = await invoke("get_all_notes");
-  console.log(data);
 
   parseAndSaveNotesToStore(data);
   groupNotesByFolder(state.notes);
