@@ -3,7 +3,7 @@
     <FilteredTags @handle-clear-filters="handleClearFilters" />
 
     <template v-for="(value, name) in state.notesWithFolders">
-      <details>
+      <details open>
         <summary>{{ name }}</summary>
         <div
           :id="name.toString()"
@@ -78,15 +78,14 @@ const state: IState = reactive({
 const router = useRouter();
 
 async function onDrop(event: DragEvent) {
-  console.log((event.target as HTMLElement).id);
-  const folderId = (event.target as HTMLElement).id;
+  const folderId = (event.currentTarget as HTMLElement).id;
 
   const updatedNotes: NoteStorage = await invoke("update_note_folder_id", {
     noteId: draggedNoteId.value,
     folderId: folderId,
   });
 
-  saveParseAndSaveNotesToStore(updatedNotes);
+  parseAndSaveNotesToStore(updatedNotes);
   groupNotesByFolder(state.notes);
 }
 
@@ -109,12 +108,10 @@ function groupNotesByFolder(notes: Note[]) {
     }
   });
 
-  console.log(groupedByFolders);
-
   state.notesWithFolders = groupedByFolders;
 }
 
-function saveParseAndSaveNotesToStore(data: NoteStorage) {
+function parseAndSaveNotesToStore(data: NoteStorage) {
   const parsed = Object.values(data).map((v) => v);
   state.notes.length = 0;
   state.notes.push(...parsed);
@@ -124,7 +121,7 @@ function saveParseAndSaveNotesToStore(data: NoteStorage) {
 async function requestNotesList() {
   const data: NoteStorage = await invoke("get_all_notes");
 
-  saveParseAndSaveNotesToStore(data);
+  parseAndSaveNotesToStore(data);
   groupNotesByFolder(state.notes);
 
   return true;
