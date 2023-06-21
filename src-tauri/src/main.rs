@@ -27,13 +27,14 @@ fn get_all_notes() -> HashMap<String, Note> {
 }
 
 #[tauri::command]
-fn save_note(id: String, title: String, description: String, tags: Vec<String>) {
+fn save_note(id: String, title: String, description: String, tags: Vec<String>, folder_id: String) {
     let path = Path::new(PATH);
     let note = Note {
         id,
         title,
         description,
         tags,
+        folder_id,
     };
 
     let data = read_file(path);
@@ -56,8 +57,28 @@ fn delete_note(id: String) {
     let mut notes = get_all_notes();
     notes.remove(&id);
 
-    let path = Path::new(PATH);
-    match write_file(path, &notes) {
+    match write_file(Path::new(PATH), &notes) {
+        Ok(_) => (),
+        Err(error) => panic!("Problem writting the file: {:?}", error),
+    };
+}
+
+#[tauri::command]
+fn update_note_folder_id(note_id: String, folder_id: String) {
+    let mut notes = get_all_notes();
+    let note = notes.get(&note_id).expect("Error");
+
+    let updated = Note {
+        id: String::from(&note.id),
+        title: String::from(&note.title),
+        description: String::from(&note.description),
+        folder_id,
+        tags: note.tags.clone(),
+    };
+
+    notes.insert(note_id, updated);
+
+    match write_file(Path::new(PATH), &notes) {
         Ok(_) => (),
         Err(error) => panic!("Problem writting the file: {:?}", error),
     };
@@ -69,7 +90,8 @@ fn main() {
             greet,
             save_note,
             get_all_notes,
-            delete_note
+            delete_note,
+            update_note_folder_id
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

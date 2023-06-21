@@ -2,7 +2,8 @@ export interface Note {
     id: string,
     title: string,
     description: string,
-    tags: string[]
+    tags: string[],
+    folderId: string,
 }
 
 export interface NoteStorage {

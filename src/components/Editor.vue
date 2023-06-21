@@ -53,6 +53,7 @@ const state: State = reactive({
   description: "",
   tag: '',
   tags: [],
+  folderId: '',
   typingTimer: null,
 })
 
@@ -111,6 +112,7 @@ async function handleSave() {
     title: state.title,
     description: state.description,
     tags: state.tags,
+    folderId: '',
   }
   await invoke("save_note", {
     ...note,
