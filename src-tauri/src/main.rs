@@ -64,7 +64,7 @@ fn delete_note(id: String) {
 }
 
 #[tauri::command]
-fn update_note_folder_id(note_id: String, folder_id: String) {
+fn update_note_folder_id(note_id: String, folder_id: String) -> HashMap<String, Note> {
     let mut notes = get_all_notes();
     let note = notes.get(&note_id).expect("Error");
 
@@ -82,6 +82,8 @@ fn update_note_folder_id(note_id: String, folder_id: String) {
         Ok(_) => (),
         Err(error) => panic!("Problem writting the file: {:?}", error),
     };
+
+    return notes;
 }
 
 fn main() {
