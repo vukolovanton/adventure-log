@@ -6,9 +6,16 @@
         <Xmark />
       </button>
     </div>
+
+    <details>
+      <summary>New Folder</summary>
+      <div @drop.prevent="onDrop" @dragenter.prevent @dragover.prevent class="drop">
+      </div>
+    </details>
+
     <ul>
-      <li v-for="note in state.notes" :class="{ 'active-note': store.note?.id === note.id }"
-        @click="handleNoteClick(note)">
+      <li @dragstart="(event) => onDragStart(event, note.id)" :id="note.id" draggable="true" v-for="note in  state.notes "
+        :class="{ 'active-note': store.note?.id === note.id }" @click="handleNoteClick(note)">
         <a>
           {{ note.title }}
         </a>
@@ -28,12 +35,22 @@ import { store } from '../utils/store';
 interface IState {
   notes: Note[],
   isActive: boolean,
+  draggedNoteId: string | null,
 }
 const state: IState = reactive({
   notes: [],
   isActive: false,
+  draggedNoteId: null,
 })
 const router = useRouter();
+
+function onDrop(event: DragEvent) {
+  console.log('ended ->> ', state.draggedNoteId)
+}
+
+function onDragStart(event: DragEvent, id: string) {
+  state.draggedNoteId = id;
+}
 
 async function requestNotesList() {
   const data: NoteStorage = await invoke("get_all_notes");
@@ -119,5 +136,10 @@ ul {
 
 .tag {
   font-size: 12px;
+}
+
+.drop {
+  height: 100px;
+  border: 1px solid salmon;
 }
 </style>
