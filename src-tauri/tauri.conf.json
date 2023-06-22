@@ -13,12 +13,17 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "fs": {
+        "all": true,
+        "scope": ["$RESOURCE/*"]
+      },
       "shell": {
         "all": false,
         "open": true
       }
     },
     "bundle": {
+      "resources": ["resources/data.json"],
       "category": "Productivity",
       "active": true,
       "targets": "all",

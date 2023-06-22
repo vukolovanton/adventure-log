@@ -3,20 +3,21 @@
 mod utils;
 use crate::utils::{read_file, update_file, write_file, Note};
 use std::collections::HashMap;
-use std::path::Path;
+use std::path::{PathBuf};
 
-const PATH: &str = "../data.json";
-
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn get_path(handle: &tauri::AppHandle) -> PathBuf {
+    let resource_path = handle
+        .path_resolver()
+        .resolve_resource("data.json")
+        .expect("failed to resolve resource");
+    return resource_path;
 }
 
 #[tauri::command]
-fn get_all_notes() -> HashMap<String, Note> {
-    let path = Path::new(PATH);
-    let data = read_file(path);
+fn get_all_notes(handle: tauri::AppHandle) -> HashMap<String, Note> {
+    let path = get_path(&handle);
+    let data = read_file(&path);
 
     let user_notes = match data {
         Ok(d) => d,
@@ -27,8 +28,14 @@ fn get_all_notes() -> HashMap<String, Note> {
 }
 
 #[tauri::command]
-fn save_note(id: String, title: String, description: String, tags: Vec<String>) {
-    let path = Path::new(PATH);
+fn save_note(
+    handle: tauri::AppHandle,
+    id: String,
+    title: String,
+    description: String,
+    tags: Vec<String>,
+) {
+    let path = get_path(&handle);
     let note = Note {
         id,
         title,
@@ -36,7 +43,7 @@ fn save_note(id: String, title: String, description: String, tags: Vec<String>) 
         tags,
     };
 
-    let data = read_file(path);
+    let data = read_file(&path);
 
     let mut user_notes = match data {
         Ok(d) => d,
@@ -45,18 +52,19 @@ fn save_note(id: String, title: String, description: String, tags: Vec<String>) 
 
     update_file(&mut user_notes, note);
 
-    match write_file(path, &user_notes) {
+    match write_file(&path, &user_notes) {
         Ok(_) => (),
         Err(error) => panic!("Problem writting the file: {:?}", error),
     };
 }
 
 #[tauri::command]
-fn delete_note(id: String) {
-    let mut notes = get_all_notes();
+fn delete_note(handle: tauri::AppHandle, id: String) {
+    let path = get_path(&handle);
+    let mut notes = get_all_notes(handle);
     notes.remove(&id);
 
-    match write_file(Path::new(PATH), &notes) {
+    match write_file(&path, &notes) {
         Ok(_) => (),
         Err(error) => panic!("Problem writting the file: {:?}", error),
     };
@@ -65,7 +73,6 @@ fn delete_note(id: String) {
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            greet,
             save_note,
             get_all_notes,
             delete_note,

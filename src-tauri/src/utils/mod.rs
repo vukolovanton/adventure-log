@@ -12,6 +12,7 @@ pub struct Note {
 }
 
 pub fn read_file(path: &Path) -> Result<HashMap<String, Note>, Box<dyn std::error::Error>> {
+
     let mut file = File::open(path)
         .or_else(|_| create_if_not_exist(path))
         .expect("Cannot open file");
