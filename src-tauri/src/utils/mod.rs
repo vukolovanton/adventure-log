@@ -8,7 +8,6 @@ pub struct Note {
     pub id: String,
     pub title: String,
     pub description: String,
-    pub folder: String,
     pub tags: Vec<String>,
 }
 

@@ -24,7 +24,6 @@ async function handleSave() {
     title: "New",
     description: "",
     tags: [],
-    folder: "",
   };
   await invoke("save_note", {
     ...note,

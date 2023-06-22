@@ -1,46 +1,10 @@
 <template>
   <div>
     <FilteredTags @handle-clear-filters="handleClearFilters" />
-    <button @click="handleCreateNewFolder">new folder</button>
-
-    <template v-for="(value, folder) in state.notesWithFolders">
-      <details open>
-        <summary>
-          {{ folder }}
-        </summary>
-        <div
-          :data-folder="folder.toString()"
-          @drop.prevent="onDrop"
-          @dragenter.prevent
-          @dragover.prevent
-          class="drop"
-        >
-          <ul>
-            <template v-for="note in value">
-              <li
-                @dragstart="(event) => onDragStart(event, note.id)"
-                :id="note.id"
-                draggable="true"
-                :class="{ 'active-note': store.note?.id === note.id }"
-                @click="handleNoteClick(note)"
-              >
-                <a>
-                  {{ note.title }}
-                </a>
-              </li>
-            </template>
-          </ul>
-        </div>
-      </details>
-    </template>
-
     <ul>
       <template v-for="note in state.notes">
         <li
-          v-if="note.folder === ''"
-          @dragstart="(event) => onDragStart(event, note.id)"
           :id="note.id"
-          draggable="true"
           :class="{ 'active-note': store.note?.id === note.id }"
           @click="handleNoteClick(note)"
         >
@@ -61,67 +25,16 @@ import { reactive, onBeforeMount, watch, ref } from "vue";
 import { Note, NoteStorage } from "../utils/utils";
 import { store } from "../utils/store";
 
-interface NotesFolder {
-  [key: string]: Note[];
-}
-
 interface IState {
   notes: Note[];
-  notesWithFolders: NotesFolder;
   isActive: boolean;
-  draggedNoteId: string;
 }
 
 const state: IState = reactive({
   notes: [],
-  notesWithFolders: {},
   isActive: false,
-  draggedNoteId: "",
 });
 const router = useRouter();
-
-function handleCreateNewFolder() {
-  function getRandomInt() {
-    return Math.floor(Math.random() * 100);
-  }
-  state.notesWithFolders[`folder_${getRandomInt()}`] = [];
-}
-
-async function onDrop(event: DragEvent) {
-  const folder = (event.currentTarget as HTMLElement).getAttribute(
-    "data-folder"
-  );
-
-  const updatedNotes: NoteStorage = await invoke("update_note_folder", {
-    noteId: state.draggedNoteId,
-    folder: folder,
-  });
-
-  parseAndSaveNotesToStore(updatedNotes);
-  groupNotesByFolder(state.notes);
-}
-
-function onDragStart(event: DragEvent, id: string) {
-  state.draggedNoteId = id;
-}
-
-function groupNotesByFolder(notes: Note[]) {
-  const groupedByFolders: NotesFolder = {};
-  notes.forEach((note) => {
-    if (note.folder !== "") {
-      const folder = note.folder.trim();
-      const isFolderArrayExists = groupedByFolders[folder];
-      if (isFolderArrayExists) {
-        groupedByFolders[folder].push(note);
-      } else {
-        groupedByFolders[folder] = [];
-        groupedByFolders[folder].push(note);
-      }
-    }
-  });
-
-  state.notesWithFolders = groupedByFolders;
-}
 
 function parseAndSaveNotesToStore(data: NoteStorage) {
   const parsed = Object.values(data).map((v) => v);
@@ -134,8 +47,6 @@ async function requestNotesList() {
   const data: NoteStorage = await invoke("get_all_notes");
 
   parseAndSaveNotesToStore(data);
-  groupNotesByFolder(state.notes);
-
   return true;
 }
 
