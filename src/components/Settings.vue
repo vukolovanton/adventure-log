@@ -32,6 +32,7 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { writeTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { NoteStorage } from "../utils/interfaces";
+import { store } from "../utils/store";
 
 async function handleExport() {
   const data: NoteStorage = await invoke("get_all_notes");
@@ -49,10 +50,16 @@ async function handleImport(event: Event) {
       const file = files[0];
       if (file.type !== "application/json") return;
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         if (event && event.target) {
           const content = event.target.result;
-          console.log(content);
+          if (content !== "") {
+            const importedNotes = JSON.parse(content as string);
+            const t = await invoke("import_notes", {
+              notes: importedNotes,
+            });
+            store.lastUpdate = Date.now();
+          }
         }
       };
       reader.onloadend = () => {
@@ -80,13 +87,12 @@ input[type="file"] {
 
 .setting {
   display: flex;
-  justify-content: space-between;
-  gap: 2rem;
+  flex-direction: column;
+  gap: var(--small-gap);
 }
 .setting-info {
   display: flex;
   flex-direction: column;
-  flex: 3;
 }
 
 .setting-description {
@@ -94,8 +100,8 @@ input[type="file"] {
 }
 
 .setting-actions {
-  flex: 2;
-  gap: 0.5rem;
-  align-items: flex-start;
+  display: flex;
+  gap: var(--big-gap);
+  align-items: center;
 }
 </style>

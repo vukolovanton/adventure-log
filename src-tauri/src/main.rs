@@ -70,12 +70,22 @@ fn delete_note(handle: tauri::AppHandle, id: String) {
     };
 }
 
+#[tauri::command]
+fn import_notes(handle: tauri::AppHandle, notes: HashMap<String, Note>) {
+    let path = get_path(&handle);
+    match write_file(&path, &notes) {
+        Ok(_) => (),
+        Err(error) => panic!("Problem writting the file: {:?}", error),
+    };
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             save_note,
             get_all_notes,
             delete_note,
+            import_notes
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
