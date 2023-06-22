@@ -4,6 +4,7 @@
       <input v-model="state.title" @keyup="onKeyUp" />
       <div class="editor-actions">
         <button
+          tabindex="-1"
           aria-label="Delete"
           class="delete"
           v-if="state.editedNote?.id"
@@ -25,16 +26,17 @@
       <div class="editor-actions">
         <input v-model="state.tag" @keyup.enter="handleAddNewTag" />
         <button aria-label="Add new tag" @click="handleAddNewTag">
-          <Tag />
+          <HashTag />
         </button>
       </div>
       <div class="tags-container">
-        <div v-for="tag in state.tags" class="tags-inner-container">
-          <span @click="handleTagClick(tag)">#{{ tag }}</span>
-          <button class="delete-tag delete mini" @click="handleDeleteTag(tag)">
-            <Delete />
-          </button>
-        </div>
+        <template v-for="tag in state.tags">
+          <Tag
+            :tag="tag"
+            @handle-delete-tag="handleDeleteTag"
+            @handle-tag-click="handleTagClick"
+          />
+        </template>
       </div>
     </div>
   </div>
@@ -42,12 +44,14 @@
 
 <script setup lang="ts">
 import Delete from "./icons/Delete.vue";
-import Tag from "./icons/Tag.vue";
+import HashTag from "./icons/HashTag.vue";
+import Tag from "./Tag.vue";
 import { invoke } from "@tauri-apps/api/tauri";
 import { reactive, watch } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import { store, Store } from "../utils/store";
 import { Note } from "../utils/utils";
+import { stat } from "fs";
 
 interface State {
   editedNote: Note | null;
@@ -79,6 +83,7 @@ function stateCleanup() {
 }
 
 function handleAddNewTag() {
+  if (state.tag.trim() === "") return;
   state.tags.push(state.tag);
   state.tag = "";
   handleSave();
@@ -134,7 +139,6 @@ async function handleSave() {
 
 function findAndSetNote(newId: string) {
   const note = store.notes.find((note) => note.id === newId);
-  console.log(note);
   if (note) {
     state.editedNote = note;
     state.description = note.description;
@@ -187,6 +191,7 @@ onBeforeRouteUpdate(() => {
 .tags-container {
   display: flex;
   gap: 0.5em;
+  margin-top: var(--small-gap);
 }
 
 .Editor {
@@ -204,24 +209,5 @@ onBeforeRouteUpdate(() => {
 .editor-actions {
   display: flex;
   gap: 1rem;
-}
-
-.tags-container span {
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.delete-tag {
-  display: none;
-}
-
-.tags-inner-container {
-  display: flex;
-  align-items: center;
-}
-
-.tags-inner-container:hover > .delete-tag {
-  display: block;
-  margin-left: 0.2rem;
 }
 </style>

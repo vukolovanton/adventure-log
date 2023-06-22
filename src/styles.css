@@ -1,4 +1,4 @@
-@import url('./styles/button.css');
+@import url("./styles/button.css");
 
 :root {
   font-family: Alice, Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -18,15 +18,18 @@
 
   --accent-color: bisque;
   --big-gap: 1.5rem;
+  --small-gap: 0.75rem;
   --padding-inner: 1rem;
   --text-color: ##292929;
   --background-color: #f6f6f6;
   --alt-background-color: #f0f0f0;
   --alt-text-color: white;
+  --blue-color: #603fe3;
+  --yellow-color: #ffcd4d;
+  --red-color: #ec5555;
+  --border-radius: 6px;
   --font-size: 16px;
-  --blue-color: #603FE3;
-  --yellow-color: #FFCD4D;
-  --red-color: #EC5555;
+  --font-size-small: 12px;
 }
 
 * {
@@ -34,20 +37,14 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Alice, Avenir, Helvetica, Arial, sans-serif;
-}
-
-input,
-textarea {
   font-size: var(--font-size);
-
 }
 
 @font-face {
-  font-family: 'Alice';
+  font-family: "Alice";
   font-weight: 400;
   font-style: normal;
   font-display: auto;
   unicode-range: U+000-5FF;
-  src: local('Alice'),
-    url('./assets/Alice.ttf') format('truetype');
+  src: local("Alice"), url("./assets/Alice.ttf") format("truetype");
 }

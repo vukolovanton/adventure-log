@@ -1,10 +1,9 @@
 button {
-  font-size: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   color: var(--text-color);
   background: #fff;
   border: none;
@@ -31,8 +30,12 @@ button:hover {
 }
 
 .mini {
-  font-size: 10px;
-  padding: 3px 7px;
+  padding: 4px 6px;
+  display: flex;
+}
+
+.mini > svg {
+  height: 0.5rem;
 }
 
 .delete:hover {
