@@ -49,7 +49,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { reactive, watch } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import { store, Store } from "../utils/store";
-import { Note } from "../utils/utils";
+import { Note } from "../utils/interfaces";
 
 interface State {
   editedNote: Note | null;

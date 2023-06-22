@@ -1,20 +1,20 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from "vue-router";
 
-import Greet from '../components/Greet.vue';
-import Editor from '../components/Editor.vue';
+import Settings from "../components/Settings.vue";
+import Editor from "../components/Editor.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: Greet,
+    path: "/",
+    name: "home",
+    component: Settings,
   },
   {
-    path: '/editor/:id?',
-    name: 'editor',
+    path: "/editor/:id?",
+    name: "editor",
     sensitive: true,
     component: Editor,
-  }
+  },
 ];
 
 const router = createRouter({

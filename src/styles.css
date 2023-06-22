@@ -37,6 +37,11 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Alice, Avenir, Helvetica, Arial, sans-serif;
+}
+
+button,
+textarea,
+input {
   font-size: var(--font-size);
 }
 

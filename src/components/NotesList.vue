@@ -2,17 +2,17 @@
   <div>
     <FilteredTags @handle-clear-filtered-tag="handleClearFilteredTag" />
     <ul>
-      <template v-for="note in excludeNotesBasedOnAppliedFilter()">
-        <li
-          :id="note.id"
-          :class="{ 'active-note': store.note?.id === note.id }"
-          @click="handleNoteClick(note)"
-        >
-          <a>
-            {{ note.title }}
-          </a>
-        </li>
-      </template>
+      <li
+        v-for="note in excludeNotesBasedOnAppliedFilter()"
+        :id="note.id"
+        :key="note.id"
+        :class="{ 'active-note': store.note?.id === note.id }"
+        @click="handleNoteClick(note)"
+      >
+        <a>
+          {{ note.title }}
+        </a>
+      </li>
     </ul>
   </div>
 </template>
@@ -22,7 +22,7 @@ import FilteredTags from "./FilteredTags.vue";
 import { useRouter } from "vue-router";
 import { invoke } from "@tauri-apps/api/tauri";
 import { reactive, onBeforeMount, watch, ref } from "vue";
-import { Note, NoteStorage } from "../utils/utils";
+import { Note, NoteStorage } from "../utils/interfaces";
 import { store } from "../utils/store";
 
 interface IState {

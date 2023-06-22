@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import Sidebar from './components/Sidebar.vue';
-import Editor from './components/Editor.vue';
+import Sidebar from "./components/Sidebar.vue";
 </script>
 
 <template>
@@ -10,7 +9,7 @@ import Editor from './components/Editor.vue';
   </div>
 </template>
 
-<style >
+<style>
 .container {
   display: grid;
   grid-template-columns: 0.5fr 1.5fr;
@@ -18,8 +17,7 @@ import Editor from './components/Editor.vue';
   gap: 0px 1rem;
   grid-auto-flow: row;
   justify-items: stretch;
-  grid-template-areas:
-    "Sidebar Editor";
+  grid-template-areas: "Sidebar Editor";
 }
 
 .Editor {
