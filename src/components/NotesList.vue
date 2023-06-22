@@ -2,7 +2,7 @@
   <div>
     <FilteredTags @handle-clear-filtered-tag="handleClearFilteredTag" />
     <ul>
-      <template v-for="note in state.notes">
+      <template v-for="note in excludeNotesBasedOnAppliedFilter()">
         <li
           :id="note.id"
           :class="{ 'active-note': store.note?.id === note.id }"
@@ -38,8 +38,6 @@ const router = useRouter();
 
 function parseAndSaveNotesToStore(data: NoteStorage) {
   const parsed = Object.values(data).map((v) => v);
-  state.notes.length = 0;
-  state.notes.push(...parsed);
   store.notes = parsed;
 }
 
@@ -60,15 +58,18 @@ function handleNoteClick(note: Note) {
 function handleClearFilteredTag(tag: string) {
   const filtered = store.filteredTags.filter((t) => t !== tag);
   store.filteredTags = filtered;
-  // requestNotesList();
 }
 
-function eqxcludeNotesBasedOnAppliedFilter(filteredTags: string[]) {
-  const filtered = state.notes.filter((n) => {
-    const t = n.tags.some((el) => filteredTags.includes(el));
+function excludeNotesBasedOnAppliedFilter() {
+  if (store.filteredTags.length === 0) {
+    return store.notes;
+  }
+  const filtered = store.notes.filter((n) => {
+    const t = n.tags.some((el) => store.filteredTags.includes(el));
     return t;
   });
-  state.notes = filtered;
+
+  return filtered;
 }
 
 onBeforeMount(() => {
@@ -81,7 +82,7 @@ watch(
     if (nextValue !== prevValue) {
       await requestNotesList();
       if (store.filteredTags.length > 0) {
-        eqxcludeNotesBasedOnAppliedFilter(store.filteredTags);
+        excludeNotesBasedOnAppliedFilter();
       }
     }
   }
@@ -90,7 +91,7 @@ watch(
 watch(
   () => store.filteredTags,
   (newFilteredTags) => {
-    eqxcludeNotesBasedOnAppliedFilter(newFilteredTags);
+    excludeNotesBasedOnAppliedFilter();
   },
   {
     deep: true,
