@@ -31,11 +31,9 @@
       </div>
       <div class="tags-container">
         <template v-for="tag in state.tags">
-          <Tag
-            :tag="tag"
-            @handle-delete-tag="handleDeleteTag"
-            @handle-tag-click="handleTagClick"
-          />
+          <Tag :tag="tag" @handle-tag-click="handleTagClick">
+            <TagActions :tag="tag" @handle-delete-tag="handleDeleteTag" />
+          </Tag>
         </template>
       </div>
     </div>
@@ -46,12 +44,12 @@
 import Delete from "./icons/Delete.vue";
 import HashTag from "./icons/HashTag.vue";
 import Tag from "./Tag.vue";
+import TagActions from "./TagActions.vue";
 import { invoke } from "@tauri-apps/api/tauri";
 import { reactive, watch } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import { store, Store } from "../utils/store";
 import { Note } from "../utils/utils";
-import { stat } from "fs";
 
 interface State {
   editedNote: Note | null;

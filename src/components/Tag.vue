@@ -1,13 +1,7 @@
 <template>
   <div class="tags-inner-container">
     <span class="tag" @click="$emit('handleTagClick', tag)">#{{ tag }}</span>
-    <button
-      tabindex="-1"
-      class="delete-tag delete mini"
-      @click="$emit('handleDeleteTag', tag)"
-    >
-      <Delete />
-    </button>
+    <slot></slot>
   </div>
 </template>
 
@@ -17,17 +11,10 @@ defineProps<{
 }>();
 defineEmits<{
   (e: "handleTagClick", tag: string): void;
-  (e: "handleDeleteTag", tag: string): void;
 }>();
-
-import Delete from "./icons/Delete.vue";
 </script>
 
-<style scoped>
-.delete-tag {
-  display: none;
-}
-
+<style>
 .tags-inner-container {
   display: flex;
   align-items: center;

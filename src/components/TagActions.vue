@@ -9,13 +9,18 @@
 </template>
 
 <script setup lang="ts">
+import Delete from "./icons/Delete.vue";
+
 defineProps<{
   tag: string;
 }>();
 defineEmits<{
-  (e: "handleTagClick", tag: string): void;
   (e: "handleDeleteTag", tag: string): void;
 }>();
 </script>
 
-<style scoped></style>
+<style scoped>
+.delete-tag {
+  display: none;
+}
+</style>

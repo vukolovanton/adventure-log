@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FilteredTags @handle-clear-filters="handleClearFilters" />
+    <FilteredTags @handle-clear-filtered-tag="handleClearFilteredTag" />
     <ul>
       <template v-for="note in state.notes">
         <li
@@ -57,9 +57,10 @@ function handleNoteClick(note: Note) {
   });
 }
 
-function handleClearFilters() {
-  store.filteredTags = [];
-  requestNotesList();
+function handleClearFilteredTag(tag: string) {
+  const filtered = store.filteredTags.filter((t) => t !== tag);
+  store.filteredTags = filtered;
+  // requestNotesList();
 }
 
 function eqxcludeNotesBasedOnAppliedFilter(filteredTags: string[]) {
