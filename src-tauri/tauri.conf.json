@@ -13,9 +13,12 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "path": {
+        "all": true
+      },
       "fs": {
         "all": true,
-        "scope": ["$RESOURCE/*"]
+        "scope": ["$RESOURCE/*", "$DESKTOP/*"]
       },
       "shell": {
         "all": false,
