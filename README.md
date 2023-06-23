@@ -1,5 +1,7 @@
-# Adventure Note
-Introducing Adventure Note, tiny app for Dungeon and Dragons players. Jot down and organize your game notes with ease. Create tags to effortlessly sort and retrieve your notes, ensuring no detail is lost in the depths of your adventures. 
+# Adventure Log
+Introducing Adventure Log, tiny app for Dungeon and Dragons players. Jot down and organize your game notes with ease. Create tags to effortlessly sort and retrieve your notes, ensuring no detail is lost in the depths of your adventures. 
+
+<img width="904" alt="Снимок экрана 2023-06-23 в 10 25 29" src="https://github.com/vukolovanton/adventure-note/assets/53794193/7f23c90a-6066-4379-b6aa-8746fe291b04">
 
 ## Development
 This app is builded with Tauri using Vue+Rust. 
