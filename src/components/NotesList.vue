@@ -102,8 +102,15 @@ watch(
 <style scoped>
 li {
   cursor: pointer;
-  padding: 0.1rem;
+  padding: 0.3rem;
   opacity: 0.6;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  word-wrap: break-word;
 }
 
 li:hover {
