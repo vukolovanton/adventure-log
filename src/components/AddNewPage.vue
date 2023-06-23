@@ -3,7 +3,7 @@
     <button aria-label="Add new note" @click="handleAddNew" class="main">
       Add New
     </button>
-    <button aria-label="Settings" @click="handleGoHome" class="settings">
+    <button aria-label="Settings" @click="goToSettings" class="settings">
       <Gear />
     </button>
   </div>
@@ -40,8 +40,8 @@ async function handleAddNew() {
   router.push(`/editor/${note.id}`);
 }
 
-function handleGoHome() {
-  router.push(`/`);
+function goToSettings() {
+  router.push(`/settings`);
 }
 </script>
 

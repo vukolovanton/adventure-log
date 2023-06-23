@@ -6,7 +6,11 @@ import Editor from "../components/Editor.vue";
 const routes = [
   {
     path: "/",
-    name: "home",
+    redirect: "/editor/",
+  },
+  {
+    path: "/settings",
+    name: "settings",
     component: Settings,
   },
   {

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h1>Adventure Log</h1>
+    <h1>Settings</h1>
 
     <div class="setting">
       <div class="setting-info">
@@ -79,6 +79,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding: var(--padding-inner);
 }
 
 input[type="file"] {
