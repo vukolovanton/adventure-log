@@ -1,12 +1,15 @@
 <template>
-  <div class="controls">
-    <button aria-label="Add new note" @click="handleAddNew" class="main">
-      Add New
-    </button>
-    <button aria-label="Settings" @click="goToSettings" class="settings">
-      <Gear />
-    </button>
-  </div>
+    <div class="controls">
+        <button aria-label="Add new note" @click="handleAddNew" class="main">
+            Add New
+        </button>
+        <button aria-label="Settings" @click="goToSettings" class="settings">
+            <Gear />
+        </button>
+        <button @click="goToCanvas">
+            Canvas
+        </button>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -18,39 +21,43 @@ import { store } from "../utils/store";
 const router = useRouter();
 
 async function handleSave() {
-  const id = Date.now().toString();
-  const note = {
-    id,
-    title: "New",
-    description: "",
-    tags: [],
-  };
-  await invoke("save_note", {
-    ...note,
-  });
+    const id = Date.now().toString();
+    const note = {
+        id,
+        title: "New",
+        description: "",
+        tags: [],
+    };
+    await invoke("save_note", {
+        ...note,
+    });
 
-  store.lastUpdate = Date.now();
-  return note;
+    store.lastUpdate = Date.now();
+    return note;
 }
 
 async function handleAddNew() {
-  const note = await handleSave();
-  store.note = note;
-  store.notes.push(note);
-  router.push(`/editor/${note.id}`);
+    const note = await handleSave();
+    store.note = note;
+    store.notes.push(note);
+    router.push(`/editor/${note.id}`);
 }
 
 function goToSettings() {
-  router.push(`/settings`);
+    router.push(`/settings`);
+}
+
+function goToCanvas() {
+    router.push('/canvas')
 }
 </script>
 
 <style scoped>
 .controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: row;
-  margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-bottom: 0.5rem;
 }
 </style>

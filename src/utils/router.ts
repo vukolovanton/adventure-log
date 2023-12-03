@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 import Settings from "../components/Settings.vue";
 import Editor from "../components/Editor.vue";
+import Canvas from "../components/Canvas.vue";
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     name: "editor",
     sensitive: true,
     component: Editor,
+  },
+  {
+    path: "/canvas",
+    name: "canvas",
+    component: Canvas,
   },
 ];
 
