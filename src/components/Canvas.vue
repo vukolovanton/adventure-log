@@ -1,6 +1,6 @@
 <template>
     <div ref="area" class="area">
-        <div ref="elmnt" @mousedown="onMouseDown" id="draggable" draggable="true" class="block">123</div>
+        <div ref="elmnt" @mousedown="onMouseDown" class="block">123</div>
     </div>
 </template>
 
@@ -37,11 +37,6 @@ function closeDragElement() {
 }
 
 onMounted(() => {
-    document.addEventListener('mousedown', onMouseDown);
-});
-
-onUnmounted(() => {
-    document.removeEventListener('mousedown', onMouseDown);
 });
 </script>
 
