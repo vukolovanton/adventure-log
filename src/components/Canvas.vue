@@ -1,20 +1,25 @@
 <template>
     <div ref="area" class="area">
-        <div ref="elmnt" @mousedown="onMouseDown" class="block">123</div>
+        <div @mousedown="onMouseDown" class="block">123</div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-
+import { ref, reactive } from 'vue';
+interface IState {
+    target: HTMLElement | null;
+}
 const pos1 = ref(0);
 const pos2 = ref(0);
-const elmnt = ref(null);
+const state: IState = reactive({
+    target: null,
+})
 
-function onMouseDown(e) {
+function onMouseDown(e: MouseEvent) {
     e.preventDefault();
     pos1.value = e.clientX;
     pos2.value = e.clientY;
+    state.target = e.target as HTMLElement;
     document.addEventListener('mousemove', elementDrag);
     document.addEventListener('mouseup', closeDragElement);
 }
@@ -25,19 +30,17 @@ function elementDrag(e: MouseEvent) {
     const dy = e.clientY - pos2.value;
     pos1.value = e.clientX;
     pos2.value = e.clientY;
-    if (elmnt && elmnt.value) {
-        elmnt.value.style.top = `${elmnt.value.offsetTop + dy}px`;
-        elmnt.value.style.left = `${elmnt.value.offsetLeft + dx}px`;
+    if (state.target) {
+        state.target.style.top = `${state.target.offsetTop + dy}px`;
+        state.target.style.left = `${state.target.offsetLeft + dx}px`;
     }
 }
 
 function closeDragElement() {
+    state.target = null;
     document.removeEventListener('mousemove', elementDrag);
     document.removeEventListener('mouseup', closeDragElement);
 }
-
-onMounted(() => {
-});
 </script>
 
 <style scoped>
