@@ -14,7 +14,6 @@ pub struct Note {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CanvasElement {
-    pub id: String,
     pub top: String,
     pub left: String,
 }

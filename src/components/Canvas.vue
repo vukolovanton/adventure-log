@@ -72,7 +72,6 @@ async function updateNoteCanvasData(element: Element) {
     const left = window.getComputedStyle(element).left;
     if (note) {
         note.canvas = {
-            id: note.id,
             top: top,
             left: left,
         }
@@ -89,15 +88,6 @@ function closeDragElement(e: MouseEvent) {
         updateNoteCanvasData(element);
     }
     state.target = null;
-//    if (area.value) {
-//        (area.value as HTMLElement).childNodes.forEach(node => {
-//            if (node.nodeType === 1) {
-//                const top = window.getComputedStyle(node as Element).top;
-//                const left = window.getComputedStyle(node as Element).left;
-//                const id = (node as Element).id;
-//            }
-//        })
-//    }
     document.removeEventListener('mousemove', elementDrag);
     document.removeEventListener('mouseup', closeDragElement);
 }

@@ -11,7 +11,6 @@ export interface NoteStorage {
 }
 
 export interface CanvasElement {
-    id: string;
     top: string;
     left: string;
 }
