@@ -1,15 +1,11 @@
 <template>
-    <div>
+    <div id="droptarget" class="dropzone">
         <button @click="scrollIntoView">Center</button>
         <vue-infinite-viewer :options="viewerOptions" ref="viewer" class="viewer">
             <div ref="area" class="area">
-                <div @mousedown="onMouseDown" class="block" id="123">
-                    <h4 class="title">Title</h4>
-                    <p class="content">
-                        since Vue's reactivity tracking works over property access, we must always keep the same reference
-                        to the reactive object. This means we can't easily "replace" a reactive object because the
-                        reactivityconnection to the first reference is lost
-                    </p>
+                <div v-for="note in state.notes" @mousedown="onMouseDown" class="block" :id="note.id" :key="note.id">
+                    <h4 class="title">{{ note.title }}</h4>
+                    <p class="content">{{ note.description }}</p>
                 </div>
             </div>
         </vue-infinite-viewer>
@@ -17,10 +13,14 @@
 </template>
 
 <script setup lang="ts">
+import { ref, reactive, onMounted } from 'vue';
 import { VueInfiniteViewer } from "vue3-infinite-viewer";
-import { ref, reactive } from 'vue';
+import { store } from "../utils/store";
+import { Note } from '../utils/interfaces';
+
 interface IState {
     target: HTMLElement | null;
+    notes: Note[];
 }
 const viewerOptions = {
     zoomable: false,
@@ -30,6 +30,7 @@ const pos2 = ref(0);
 const viewer = ref(null);
 const state: IState = reactive({
     target: null,
+    notes: [],
 })
 
 function scrollIntoView() {
@@ -62,6 +63,21 @@ function closeDragElement() {
     document.removeEventListener('mousemove', elementDrag);
     document.removeEventListener('mouseup', closeDragElement);
 }
+
+onMounted(() => {
+    const target = document.getElementById("droptarget");
+    target!.addEventListener("dragover", (event) => {
+        event.preventDefault();
+    });
+
+    target!.addEventListener("drop", (event) => {
+        event.preventDefault();
+        const note = store.notes.find(note => note.id === store.dragTarget);
+        if (note) {
+            state.notes.push(note);
+        }
+    });
+})
 </script>
 
 <style scoped>
@@ -73,6 +89,7 @@ function closeDragElement() {
     width: 300px;
     max-height: 500px;
     position: absolute;
+    cursor: grab;
 }
 
 .viewer {

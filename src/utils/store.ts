@@ -6,6 +6,7 @@ export interface Store {
   note: Note | null;
   notes: Note[];
   filteredTags: string[];
+  dragTarget: any;
 }
 
 export const store: Store = reactive({
@@ -13,4 +14,5 @@ export const store: Store = reactive({
   note: null,
   notes: [],
   filteredTags: [],
+  dragTarget: null,
 });

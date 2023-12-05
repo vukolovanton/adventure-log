@@ -2,8 +2,9 @@
     <div>
         <FilteredTags @handle-clear-filtered-tag="handleClearFilteredTag" />
         <ul>
-            <li v-for="note in excludeNotesBasedOnAppliedFilter()" :id="note.id" :key="note.id"
-                :class="{ 'active-note': store.note?.id === note.id }" @click="handleNoteClick(note)">
+            <li @dragstart="handleDragStart" draggable="true" v-for="note in excludeNotesBasedOnAppliedFilter()"
+                :id="note.id" :key="note.id" :class="{ 'active-note': store.note?.id === note.id }"
+                @click="handleNoteClick(note)">
                 <a>
                     {{ note.title }}
                 </a>
@@ -16,19 +17,15 @@
 import FilteredTags from "./FilteredTags.vue";
 import { useRouter } from "vue-router";
 import { invoke } from "@tauri-apps/api/tauri";
-import { reactive, onBeforeMount, watch, ref } from "vue";
+import { onBeforeMount, watch } from "vue";
 import { Note, NoteStorage } from "../utils/interfaces";
 import { store } from "../utils/store";
 
-interface IState {
-    notes: Note[];
-    isActive: boolean;
+function handleDragStart(e: DragEvent) {
+    const target = e.target as HTMLElement;
+    store.dragTarget = target.id;
 }
 
-const state: IState = reactive({
-    notes: [],
-    isActive: false,
-});
 const router = useRouter();
 
 function parseAndSaveNotesToStore(data: NoteStorage) {
