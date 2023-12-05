@@ -1,6 +1,7 @@
 <template>
     <div id="droptarget" class="dropzone">
         <button @click="scrollIntoView">Center</button>
+        <button @click="loadCanvas">Load</button>
         <vue-infinite-viewer :options="viewerOptions" ref="viewer" class="viewer">
             <div ref="area" class="area">
                 <div v-for="note in state.notes" @mousedown="onMouseDown" class="block" :id="note.id" :key="note.id">
@@ -13,21 +14,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
-import { VueInfiniteViewer } from "vue3-infinite-viewer";
-import { store } from "../utils/store";
-import { Note } from '../utils/interfaces';
+import {ref, reactive, onMounted} from 'vue';
+import {VueInfiniteViewer} from "vue3-infinite-viewer";
+import {store} from "../utils/store";
+import {Note} from '../utils/interfaces';
 
 interface IState {
     target: HTMLElement | null;
     notes: Note[];
 }
+
 const viewerOptions = {
     zoomable: false,
 }
 const pos1 = ref(0);
 const pos2 = ref(0);
 const viewer = ref(null);
+const area = ref(null);
 const state: IState = reactive({
     target: null,
     notes: [],
@@ -35,6 +38,10 @@ const state: IState = reactive({
 
 function scrollIntoView() {
     viewer.value.scrollTo(0, 0);
+}
+
+function loadCanvas() {
+    console.log(store.canvasLayout)
 }
 
 function onMouseDown(e: MouseEvent) {
@@ -60,6 +67,21 @@ function elementDrag(e: MouseEvent) {
 
 function closeDragElement() {
     state.target = null;
+    if (area.value) {
+        (area.value as HTMLElement).childNodes.forEach(node => {
+            if (node.nodeType === 1) {
+                const top = window.getComputedStyle(node as Element).top;
+                const left = window.getComputedStyle(node as Element).left;
+                const id = (node as Element).id;
+                store.canvasLayout[id] = {
+                    id,
+                    top,
+                    left,
+                }
+            }
+        })
+    }
+
     document.removeEventListener('mousemove', elementDrag);
     document.removeEventListener('mouseup', closeDragElement);
 }
