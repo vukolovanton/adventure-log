@@ -4,12 +4,12 @@
         <vue-infinite-viewer :options="viewerOptions" ref="viewer" class="viewer">
             <div ref="area" class="area">
                 <div @mousedown="onMouseDown" class="block" id="123">
-                    <!-- <h4 class="title">Title</h4> -->
-                    <!-- <p>
+                    <h4 class="title">Title</h4>
+                    <p class="content">
                         since Vue's reactivity tracking works over property access, we must always keep the same reference
                         to the reactive object. This means we can't easily "replace" a reactive object because the
                         reactivityconnection to the first reference is lost
-                    </p> -->
+                    </p>
                 </div>
             </div>
         </vue-infinite-viewer>
@@ -40,8 +40,7 @@ function onMouseDown(e: MouseEvent) {
     e.preventDefault();
     pos1.value = e.clientX;
     pos2.value = e.clientY;
-    state.target = e.target as HTMLElement;
-    console.log(e)
+    state.target = (e.target as HTMLElement).offsetParent as HTMLElement;
     document.addEventListener('mousemove', elementDrag);
     document.addEventListener('mouseup', closeDragElement);
 }
@@ -72,8 +71,7 @@ function closeDragElement() {
 
 .block {
     width: 300px;
-    height: 20px;
-    background-color: pink;
+    max-height: 500px;
     position: absolute;
 }
 
@@ -83,8 +81,10 @@ function closeDragElement() {
 }
 
 .title {
-    width: 300px;
-    height: 30px;
     background-color: orange;
+}
+
+.content {
+    background-color: aliceblue;
 }
 </style>
