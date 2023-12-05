@@ -1,5 +1,5 @@
 <template>
-    <div @dragover.prevent id="droptarget" class="dropzone">
+    <div @dragover.prevent @drop.prevent="handleDrop" id="droptarget" class="dropzone">
         <button @click="scrollIntoView">Center</button>
         <button @click="loadCanvas">Load</button>
         <vue-infinite-viewer ref="viewer" class="viewer">
@@ -92,17 +92,15 @@ function closeDragElement(e: MouseEvent) {
     document.removeEventListener('mouseup', closeDragElement);
 }
 
-onMounted(() => {
-    // TODO: Clear event listeners
-    const target = document.getElementById("droptarget");
+function handleDrop(event: MouseEvent) {
+    const note = store.notes.find(note => note.id === store.dragTarget);
+    if (note) {
+        state.notes.push(note);
+    }
+}
 
-    target!.addEventListener("drop", (event) => {
-        event.preventDefault();
-        const note = store.notes.find(note => note.id === store.dragTarget);
-        if (note) {
-            state.notes.push(note);
-        }
-    });
+onMounted(() => {
+
 })
 </script>
 
