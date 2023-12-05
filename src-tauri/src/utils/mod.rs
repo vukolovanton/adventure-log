@@ -9,6 +9,14 @@ pub struct Note {
     pub title: String,
     pub description: String,
     pub tags: Vec<String>,
+    pub canvas: Option<CanvasElement>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CanvasElement {
+    pub id: String,
+    pub top: String,
+    pub left: String,
 }
 
 pub fn read_file(path: &Path) -> Result<HashMap<String, Note>, Box<dyn std::error::Error>> {

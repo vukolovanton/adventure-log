@@ -1,10 +1,17 @@
 export interface Note {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
+    id: string;
+    title: string;
+    description: string;
+    tags: string[];
+    canvas: CanvasElement | null;
 }
 
 export interface NoteStorage {
-  [key: string]: Note;
+    [key: string]: Note;
+}
+
+export interface CanvasElement {
+    id: string;
+    top: string;
+    left: string;
 }

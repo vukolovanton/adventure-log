@@ -1,6 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod utils;
+use utils::CanvasElement;
+
 use crate::utils::{read_file, update_file, write_file, Note};
 use std::collections::HashMap;
 use std::path::{PathBuf};
@@ -34,6 +36,7 @@ fn save_note(
     title: String,
     description: String,
     tags: Vec<String>,
+    canvas: Option<CanvasElement>,
 ) {
     let path = get_path(&handle);
     let note = Note {
@@ -41,6 +44,7 @@ fn save_note(
         title,
         description,
         tags,
+        canvas,
     };
 
     let data = read_file(&path);

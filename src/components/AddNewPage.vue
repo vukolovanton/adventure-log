@@ -4,7 +4,7 @@
             Add New
         </button>
         <button aria-label="Settings" @click="goToSettings" class="settings">
-            <Gear />
+            <Gear/>
         </button>
         <button @click="goToCanvas">
             Canvas
@@ -13,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import { invoke } from "@tauri-apps/api/tauri";
+import {invoke} from "@tauri-apps/api/tauri";
 import Gear from "./icons/Gear.vue";
-import { useRouter } from "vue-router";
-import { store } from "../utils/store";
+import {useRouter} from "vue-router";
+import {store} from "../utils/store";
 
 const router = useRouter();
 
@@ -27,6 +27,7 @@ async function handleSave() {
         title: "New",
         description: "",
         tags: [],
+        canvas: null,
     };
     await invoke("save_note", {
         ...note,

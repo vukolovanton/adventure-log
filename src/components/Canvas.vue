@@ -1,8 +1,8 @@
 <template>
-    <div id="droptarget" class="dropzone">
+    <div @dragover.prevent id="droptarget" class="dropzone">
         <button @click="scrollIntoView">Center</button>
         <button @click="loadCanvas">Load</button>
-        <vue-infinite-viewer :options="viewerOptions" ref="viewer" class="viewer">
+        <vue-infinite-viewer ref="viewer" class="viewer">
             <div ref="area" class="area">
                 <div v-for="note in state.notes" @mousedown="onMouseDown" class="block" :id="note.id" :key="note.id">
                     <h4 class="title">{{ note.title }}</h4>
@@ -18,15 +18,14 @@ import {ref, reactive, onMounted} from 'vue';
 import {VueInfiniteViewer} from "vue3-infinite-viewer";
 import {store} from "../utils/store";
 import {Note} from '../utils/interfaces';
+import {invoke} from "@tauri-apps/api/tauri";
 
 interface IState {
     target: HTMLElement | null;
     notes: Note[];
+    activeNote: Note | null;
 }
 
-const viewerOptions = {
-    zoomable: false,
-}
 const pos1 = ref(0);
 const pos2 = ref(0);
 const viewer = ref(null);
@@ -34,14 +33,16 @@ const area = ref(null);
 const state: IState = reactive({
     target: null,
     notes: [],
+    activeNote: null,
 })
 
 function scrollIntoView() {
-    viewer.value.scrollTo(0, 0);
+    if (viewer && viewer.value) {
+        (viewer.value as any).scrollTo(0, 0);
+    }
 }
 
 function loadCanvas() {
-    console.log(store.canvasLayout)
 }
 
 function onMouseDown(e: MouseEvent) {
@@ -65,32 +66,45 @@ function elementDrag(e: MouseEvent) {
     }
 }
 
-function closeDragElement() {
-    state.target = null;
-    if (area.value) {
-        (area.value as HTMLElement).childNodes.forEach(node => {
-            if (node.nodeType === 1) {
-                const top = window.getComputedStyle(node as Element).top;
-                const left = window.getComputedStyle(node as Element).left;
-                const id = (node as Element).id;
-                store.canvasLayout[id] = {
-                    id,
-                    top,
-                    left,
-                }
-            }
-        })
+async function updateNoteCanvasData(element: Element) {
+    const note = state.notes.find(n => n.id === element.id);
+    const top = window.getComputedStyle(element).top;
+    const left = window.getComputedStyle(element).left;
+    if (note) {
+        note.canvas = {
+            id: note.id,
+            top: top,
+            left: left,
+        }
+        state.activeNote = note;
     }
+    await invoke("save_note", {
+        ...note,
+    });
+}
 
+function closeDragElement(e: MouseEvent) {
+    const element = (e.target as HTMLElement)?.offsetParent;
+    if (element) {
+        updateNoteCanvasData(element);
+    }
+    state.target = null;
+//    if (area.value) {
+//        (area.value as HTMLElement).childNodes.forEach(node => {
+//            if (node.nodeType === 1) {
+//                const top = window.getComputedStyle(node as Element).top;
+//                const left = window.getComputedStyle(node as Element).left;
+//                const id = (node as Element).id;
+//            }
+//        })
+//    }
     document.removeEventListener('mousemove', elementDrag);
     document.removeEventListener('mouseup', closeDragElement);
 }
 
 onMounted(() => {
+    // TODO: Clear event listeners
     const target = document.getElementById("droptarget");
-    target!.addEventListener("dragover", (event) => {
-        event.preventDefault();
-    });
 
     target!.addEventListener("drop", (event) => {
         event.preventDefault();
