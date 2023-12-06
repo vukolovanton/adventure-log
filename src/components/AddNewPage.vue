@@ -3,20 +3,21 @@
         <button aria-label="Add new note" @click="handleAddNew" class="main">
             Add New
         </button>
-        <button aria-label="Settings" @click="goToSettings" class="settings">
-            <Gear/>
-        </button>
         <button @click="goToCanvas">
-            Canvas
+            <Map />
+        </button>
+        <button aria-label="Settings" @click="goToSettings" class="settings">
+            <Gear />
         </button>
     </div>
 </template>
 
 <script setup lang="ts">
-import {invoke} from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/tauri";
 import Gear from "./icons/Gear.vue";
-import {useRouter} from "vue-router";
-import {store} from "../utils/store";
+import Map from "./icons/Map.vue";
+import { useRouter } from "vue-router";
+import { store } from "../utils/store";
 
 const router = useRouter();
 

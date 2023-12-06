@@ -1,55 +1,55 @@
 @import url("./styles/button.css");
 
 :root {
-  font-family: Alice, Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: var(--font-size);
-  line-height: 24px;
-  font-weight: 400;
+    font-size: var(--font-size);
+    line-height: 24px;
+    font-weight: 400;
 
-  color: var(--text-color);
-  background-color: var(--background-color);
+    color: var(--text-color);
+    background-color: var(--background-color);
 
-  font-family: Alice, Avenir, Helvetica, Arial, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+    font-family: Alice, Avenir, Helvetica, Arial, sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
 
-  --accent-color: bisque;
-  --big-gap: 1.5rem;
-  --small-gap: 0.75rem;
-  --padding-inner: 1rem;
-  --text-color: ##292929;
-  --background-color: #f6f6f6;
-  --alt-background-color: #f0f0f0;
-  --alt-text-color: white;
-  --blue-color: #603fe3;
-  --yellow-color: #ffcd4d;
-  --red-color: #ec5555;
-  --border-radius: 6px;
-  --font-size: 16px;
-  --font-size-small: 12px;
+    --accent-color: bisque;
+    --big-gap: 1.5rem;
+    --small-gap: 0.75rem;
+    --padding-inner: 1rem;
+    --text-color: #292929;
+    --background-color: #f6f6f6;
+    --alt-background-color: #f0f0f0;
+    --dark-background-accent: #e8e8e8;
+    --alt-text-color: white;
+    --blue-color: #603fe3;
+    --yellow-color: #ffcd4d;
+    --red-color: #ec5555;
+    --border-radius: 6px;
+    --font-size: 16px;
+    --font-size-small: 12px;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Alice, Avenir, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Alice, Avenir, Helvetica, Arial, sans-serif;
 }
 
 button,
 textarea,
 input {
-  font-size: var(--font-size);
+    font-size: var(--font-size);
 }
 
 @font-face {
-  font-family: "Alice";
-  font-weight: 400;
-  font-style: normal;
-  font-display: auto;
-  unicode-range: U+000-5FF;
-  src: local("Alice"), url("./assets/Alice.ttf") format("truetype");
+    font-family: "Alice";
+    font-weight: 400;
+    font-style: normal;
+    font-display: auto;
+    unicode-range: U+000-5FF;
+    src: local("Alice"), url("./assets/Alice.ttf") format("truetype");
 }

@@ -1,11 +1,13 @@
 <template>
     <div @dragover.prevent @drop.prevent="handleDrop" id="droptarget" class="dropzone">
-        <button @click="scrollIntoView">Center</button>
+        <button @click="scrollIntoView" class="target mini">
+            <Target />
+        </button>
         <vue-infinite-viewer ref="viewer" class="viewer">
             <div ref="area" class="area">
                 <div v-for="note in state.notes" @mousedown="onMouseDown" class="block" :id="note.id" :key="note.id">
-                    <h4 class="title">{{ note.title }}</h4>
-                    <p class="content">{{ note.description }}</p>
+                    <h4 class="title inner-padding">{{ note.title }}</h4>
+                    <p class="content inner-padding">{{ note.description }}</p>
                 </div>
             </div>
         </vue-infinite-viewer>
@@ -13,16 +15,16 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, onMounted, onBeforeMount, nextTick, onUpdated} from 'vue';
-import {VueInfiniteViewer} from "vue3-infinite-viewer";
-import {store} from "../utils/store";
-import {Note, NoteStorage} from '../utils/interfaces';
-import {invoke} from "@tauri-apps/api/tauri";
+import { ref, reactive, onMounted, nextTick } from 'vue';
+import { VueInfiniteViewer } from "vue3-infinite-viewer";
+import { store } from "../utils/store";
+import { Note, NoteStorage } from '../utils/interfaces';
+import { invoke } from "@tauri-apps/api/tauri";
+import Target from "./icons/Target.vue";
 
 interface IState {
     target: HTMLElement | null;
     notes: Note[];
-    activeNote: Note | null;
 }
 
 const pos1 = ref(0);
@@ -32,7 +34,6 @@ const area = ref(null);
 const state: IState = reactive({
     target: null,
     notes: [],
-    activeNote: null,
 })
 
 function scrollIntoView() {
@@ -71,7 +72,6 @@ async function updateNoteCanvasData(element: Element) {
             top: top,
             left: left,
         }
-        state.activeNote = note;
     }
     await invoke("save_note", {
         ...note,
@@ -88,7 +88,7 @@ function closeDragElement(e: MouseEvent) {
     document.removeEventListener('mouseup', closeDragElement);
 }
 
-function handleDrop(event: MouseEvent) {
+function handleDrop() {
     const note = store.notes.find(note => note.id === store.dragTarget);
     if (note) {
         state.notes.push(note);
@@ -138,13 +138,30 @@ onMounted(async () => {
 .viewer {
     width: 100%;
     height: 100%;
+    background-color: #e5e5f7;
+    opacity: 0.8;
+    background-image: radial-gradient(#603fe3 0.5px, #e5e5f7 0.5px);
+    background-size: 10px 10px;
 }
 
 .title {
-    background-color: orange;
+    background: var(--blue-color);
+    color: var(--alt-text-color);
 }
 
 .content {
     background-color: aliceblue;
+}
+
+.target {
+    position: absolute;
+    z-index: 100;
+    background: var(--background-color);
+    top: 2%;
+    right: 1%;
+}
+
+.inner-padding {
+    padding: 0.5em;
 }
 </style>

@@ -106,13 +106,15 @@ li {
 }
 
 li:hover {
-    text-decoration: underline;
-    text-decoration-color: cadetblue;
+    background-color: var(--dark-background-accent);
+    border-radius: var(--border-radius);
+
 }
 
 .active-note {
-    text-decoration-line: underline;
     opacity: 1;
+    background-color: var(--dark-background-accent);
+    border-radius: var(--border-radius);
 }
 
 ul {
@@ -121,6 +123,13 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+}
+
+ul::-webkit-scrollbar {
+    display: none;
 }
 
 .drop {
