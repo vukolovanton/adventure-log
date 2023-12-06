@@ -118,7 +118,7 @@ li:hover {
 }
 
 ul {
-    max-height: 90vh;
+    max-height: 85vh;
     overflow: scroll;
     list-style-type: none;
     margin: 0;

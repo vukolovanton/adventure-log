@@ -1,8 +1,16 @@
 <template>
     <div @dragover.prevent @drop.prevent="handleDrop" id="droptarget" class="dropzone">
-        <button @click="scrollIntoView" class="target mini">
-            <Target />
-        </button>
+        <div class="actions-container">
+            <button @click="scrollIntoView" class="target mini">
+                <Target />
+            </button>
+            <button @click="zoomIn" class="target mini">
+                <Plus />
+            </button>
+            <button @click="zoomOut" class="target mini">
+                <Minus />
+            </button>
+        </div>
         <vue-infinite-viewer ref="viewer" class="viewer">
             <div ref="area" class="area">
                 <div v-for="note in state.notes" @mousedown="onMouseDown" class="block" :id="note.id" :key="note.id">
@@ -21,12 +29,20 @@ import { store } from "../utils/store";
 import { Note, NoteStorage } from '../utils/interfaces';
 import { invoke } from "@tauri-apps/api/tauri";
 import Target from "./icons/Target.vue";
+import Plus from "./icons/Plus.vue";
+import Minus from './icons/Minus.vue';
 
 interface IState {
     target: HTMLElement | null;
     notes: Note[];
 }
-
+const initial = {
+    useMouseDrag: true,
+    useWheelScroll: true,
+    useAutoZoom: true,
+    zoomRange: [0.1, 10],
+    maxPinchWheel: 10,
+}
 const pos1 = ref(0);
 const pos2 = ref(0);
 const viewer = ref(null);
@@ -34,11 +50,23 @@ const area = ref(null);
 const state: IState = reactive({
     target: null,
     notes: [],
-})
+});
 
 function scrollIntoView() {
     if (viewer && viewer.value) {
         (viewer.value as any).scrollTo(0, 0);
+    }
+}
+
+function zoomIn() {
+    if (viewer && viewer.value) {
+        (viewer.value as any).setZoom(1);
+    }
+}
+
+function zoomOut() {
+    if (viewer && viewer.value) {
+        (viewer.value as any).setZoom(0.5);
     }
 }
 
@@ -153,12 +181,18 @@ onMounted(async () => {
     background-color: aliceblue;
 }
 
-.target {
+.actions-container {
     position: absolute;
     z-index: 100;
-    background: var(--background-color);
     top: 2%;
     right: 1%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--small-gap);
+}
+
+.target {
+    background: var(--background-color);
 }
 
 .inner-padding {
