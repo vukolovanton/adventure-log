@@ -13,7 +13,8 @@
         </div>
         <vue-infinite-viewer ref="viewer" class="viewer">
             <div ref="area" class="area">
-                <div v-for="note in state.notes" @mousedown="onMouseDown" class="block" :id="note.id" :key="note.id">
+                <div v-for="note in state.notes" @dblclick="onDoubleClick" @mousedown="onMouseDown" class="block"
+                    :id="note.id" :key="note.id">
                     <h4 class="title inner-padding">{{ note.title }}</h4>
                     <p class="content inner-padding">{{ note.description }}</p>
                 </div>
@@ -31,6 +32,9 @@ import { invoke } from "@tauri-apps/api/tauri";
 import Target from "./icons/Target.vue";
 import Plus from "./icons/Plus.vue";
 import Minus from './icons/Minus.vue';
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 interface IState {
     target: HTMLElement | null;
@@ -67,6 +71,19 @@ function zoomIn() {
 function zoomOut() {
     if (viewer && viewer.value) {
         (viewer.value as any).setZoom(0.5);
+    }
+}
+
+function onDoubleClick(e: MouseEvent) {
+    const target = (e.target as HTMLElement).offsetParent as HTMLElement;
+    if (target.id) {
+        const note = state.notes.find(note => note.id === target.id);
+        if (note) {
+            store.note = note;
+            router.push({
+                path: `/editor/${note.id}`,
+            });
+        }
     }
 }
 

@@ -1,38 +1,27 @@
 <template>
     <div class="Editor">
         <div class="editor-header">
-            <input v-model="state.title" @keyup="onKeyUp"/>
+            <input v-model="state.title" @keyup="onKeyUp" />
             <div class="editor-actions">
-                <button
-                    tabindex="-1"
-                    aria-label="Delete"
-                    class="delete"
-                    v-if="state.editedNote?.id"
-                    @click="handleDeleteNote"
-                >
-                    <Delete/>
+                <button tabindex="-1" aria-label="Delete" class="delete" v-if="state.editedNote?.id"
+                    @click="handleDeleteNote">
+                    <Delete />
                 </button>
             </div>
         </div>
 
-        <textarea
-            class="text-container"
-            v-model="state.description"
-            autofocus
-            spellcheck="true"
-            @keyup="onKeyUp"
-        />
+        <textarea class="text-container" v-model="state.description" autofocus spellcheck="true" @keyup="onKeyUp" />
         <div>
             <div class="editor-actions">
-                <input v-model="state.tag" @keyup.enter="handleAddNewTag"/>
+                <input v-model="state.tag" @keyup.enter="handleAddNewTag" />
                 <button aria-label="Add new tag" @click="handleAddNewTag">
-                    <HashTag/>
+                    <HashTag />
                 </button>
             </div>
             <div class="tags-container">
                 <template v-for="tag in state.tags">
                     <Tag :tag="tag" @handle-tag-click="handleTagClick">
-                        <TagActions :tag="tag" @handle-delete-tag="handleDeleteTag"/>
+                        <TagActions :tag="tag" @handle-delete-tag="handleDeleteTag" />
                     </Tag>
                 </template>
             </div>
@@ -45,11 +34,11 @@ import Delete from "./icons/Delete.vue";
 import HashTag from "./icons/HashTag.vue";
 import Tag from "./Tag.vue";
 import TagActions from "./TagActions.vue";
-import {invoke} from "@tauri-apps/api/tauri";
-import {reactive, watch} from "vue";
-import {onBeforeRouteUpdate, useRoute, useRouter} from "vue-router";
-import {store, Store} from "../utils/store";
-import {Note} from "../utils/interfaces";
+import { invoke } from "@tauri-apps/api/tauri";
+import { reactive, watch } from "vue";
+import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
+import { store, Store } from "../utils/store";
+import { Note } from "../utils/interfaces";
 
 interface State {
     editedNote: Note | null;
@@ -125,7 +114,7 @@ async function handleSave() {
         title: state.title,
         description: state.description,
         tags: state.tags,
-        canvas: null,
+        canvas: store.note ? store.note.canvas : null,
     };
     await invoke("save_note", {
         ...note,
