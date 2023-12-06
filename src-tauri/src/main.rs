@@ -5,7 +5,7 @@ use utils::CanvasElement;
 
 use crate::utils::{read_file, update_file, write_file, Note};
 use std::collections::HashMap;
-use std::path::{PathBuf};
+use std::path::PathBuf;
 
 #[tauri::command]
 fn get_path(handle: &tauri::AppHandle) -> PathBuf {
@@ -27,6 +27,28 @@ fn get_all_notes(handle: tauri::AppHandle) -> HashMap<String, Note> {
     };
 
     return user_notes;
+}
+
+#[tauri::command]
+fn get_all_notes_with_canvas(handle: tauri::AppHandle) -> Option<HashMap<String, Note>> {
+    let path = get_path(&handle);
+    let data = read_file(&path);
+
+    let user_notes = match data {
+        Ok(d) => d,
+        Err(error) => panic!("Problem opening the file: {:?}", error),
+    };
+
+    let filtered_notes: HashMap<String, Note> = user_notes
+        .into_iter()
+        .filter(|(_, value)| value.canvas.is_some())
+        .collect();
+
+    if filtered_notes.is_empty() {
+        None // Return None if there are no notes with canvas
+    } else {
+        Some(filtered_notes) // Return the filtered notes
+    }
 }
 
 #[tauri::command]
@@ -89,7 +111,8 @@ fn main() {
             save_note,
             get_all_notes,
             delete_note,
-            import_notes
+            import_notes,
+            get_all_notes_with_canvas
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

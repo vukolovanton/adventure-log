@@ -1,7 +1,6 @@
 <template>
     <div @dragover.prevent @drop.prevent="handleDrop" id="droptarget" class="dropzone">
         <button @click="scrollIntoView">Center</button>
-        <button @click="loadCanvas">Load</button>
         <vue-infinite-viewer ref="viewer" class="viewer">
             <div ref="area" class="area">
                 <div v-for="note in state.notes" @mousedown="onMouseDown" class="block" :id="note.id" :key="note.id">
@@ -14,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, onMounted} from 'vue';
+import {ref, reactive, onMounted, onBeforeMount, nextTick, onUpdated} from 'vue';
 import {VueInfiniteViewer} from "vue3-infinite-viewer";
 import {store} from "../utils/store";
-import {Note} from '../utils/interfaces';
+import {Note, NoteStorage} from '../utils/interfaces';
 import {invoke} from "@tauri-apps/api/tauri";
 
 interface IState {
@@ -40,9 +39,6 @@ function scrollIntoView() {
     if (viewer && viewer.value) {
         (viewer.value as any).scrollTo(0, 0);
     }
-}
-
-function loadCanvas() {
 }
 
 function onMouseDown(e: MouseEvent) {
@@ -99,8 +95,31 @@ function handleDrop(event: MouseEvent) {
     }
 }
 
-onMounted(() => {
+function loadInitialCanvasState() {
+    nextTick(() => {
+        if (area.value) {
+            (area.value as HTMLElement).childNodes.forEach(node => {
+                if (node.nodeType === 1) {
+                    const note = state.notes.find(n => n.id === (node as HTMLElement).id);
+                    if (note && note.canvas) {
+                        (node as HTMLElement).style.top = note.canvas.top;
+                        (node as HTMLElement).style.left = note.canvas.left;
+                    }
+                }
+            })
+        }
+    });
 
+}
+
+onMounted(async () => {
+    const data: NoteStorage = await invoke("get_all_notes_with_canvas");
+    if (data) {
+        Object.entries(data).map(v => {
+            state.notes.push(v[1])
+        });
+    }
+    loadInitialCanvasState()
 })
 </script>
 
