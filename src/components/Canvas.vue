@@ -48,6 +48,8 @@ const initial = {
     zoomRange: [0.1, 10],
     maxPinchWheel: 10,
 }
+
+const zoom = ref(1);
 const pos1 = ref(0);
 const pos2 = ref(0);
 const viewer = ref(null);
@@ -65,13 +67,15 @@ function scrollIntoView() {
 
 function zoomIn() {
     if (viewer && viewer.value) {
-        (viewer.value as any).setZoom(1);
+        zoom.value = 1;
+        (viewer.value as any).setZoom(zoom.value);
     }
 }
 
 function zoomOut() {
     if (viewer && viewer.value) {
-        (viewer.value as any).setZoom(0.5);
+        zoom.value = 0.5;
+        (viewer.value as any).setZoom(zoom.value);
     }
 }
 
@@ -99,8 +103,12 @@ function onMouseDown(e: MouseEvent) {
 
 function elementDrag(e: MouseEvent) {
     e.preventDefault();
-    const dx = e.clientX - pos1.value;
-    const dy = e.clientY - pos2.value;
+    let dx = e.clientX - pos1.value;
+    let dy = e.clientY - pos2.value;
+    if (zoom.value === 0.5) {
+        dx = dx * 2;
+        dy = dy * 2;
+    }
     pos1.value = e.clientX;
     pos2.value = e.clientY;
     if (state.target) {
@@ -126,6 +134,7 @@ async function updateNoteCanvasData(element: Element) {
 
 function closeDragElement(e: MouseEvent) {
     const element = (e.target as HTMLElement)?.offsetParent;
+    console.log(element)
     if (element) {
         updateNoteCanvasData(element);
     }
