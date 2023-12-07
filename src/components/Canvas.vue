@@ -14,7 +14,7 @@
         <vue-infinite-viewer ref="viewer" class="viewer">
             <div ref="area" class="area">
                 <div v-for="note in state.notes" @dblclick="onDoubleClick" @mousedown="onMouseDown" class="block"
-                    :id="note.id" :key="note.id">
+                    :data-id="note.id" :key="note.id">
                     <h4 class="title inner-padding">{{ note.title }}</h4>
                     <p class="content inner-padding">{{ note.description }}</p>
                 </div>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, nextTick } from 'vue';
+import { ref, reactive, onMounted, nextTick, onUpdated } from 'vue';
 import { VueInfiniteViewer } from "vue3-infinite-viewer";
 import { store } from "../utils/store";
 import { Note, NoteStorage } from '../utils/interfaces';
@@ -40,6 +40,7 @@ interface IState {
     target: HTMLElement | null;
     notes: Note[];
 }
+
 const initial = {
     useMouseDrag: true,
     useWheelScroll: true,
@@ -76,8 +77,8 @@ function zoomOut() {
 
 function onDoubleClick(e: MouseEvent) {
     const target = (e.target as HTMLElement).offsetParent as HTMLElement;
-    if (target.id) {
-        const note = state.notes.find(note => note.id === target.id);
+    if (target.dataset.id) {
+        const note = state.notes.find(note => note.id === target.dataset.id);
         if (note) {
             store.note = note;
             router.push({
@@ -109,7 +110,7 @@ function elementDrag(e: MouseEvent) {
 }
 
 async function updateNoteCanvasData(element: Element) {
-    const note = state.notes.find(n => n.id === element.id);
+    const note = state.notes.find(n => n.id === (element as HTMLElement).dataset.id);
     const top = window.getComputedStyle(element).top;
     const left = window.getComputedStyle(element).left;
     if (note) {
@@ -133,10 +134,24 @@ function closeDragElement(e: MouseEvent) {
     document.removeEventListener('mouseup', closeDragElement);
 }
 
-function handleDrop() {
+function handleDrop(e: MouseEvent) {
     const note = store.notes.find(note => note.id === store.dragTarget);
     if (note) {
-        state.notes.push(note);
+        const isAlreadyAdded = state.notes.findIndex(n => n.id === note.id);
+        if (isAlreadyAdded === -1) {
+            if (!note.canvas) {
+                note.canvas = {
+                    top: e.clientY.toString(),
+                    left: e.clientX.toString(),
+                };
+            }
+            state.notes.push(note);
+            nextTick(() => {
+                const element = document.querySelector(`[data-id="${note.id}"]`) as HTMLElement;
+                element.style.top = `${note.canvas!.top}px`;
+                element.style.left = `${Number(note.canvas!.left) - 300}px`;
+            })
+        }
     }
 }
 
@@ -145,7 +160,7 @@ function loadInitialCanvasState() {
         if (area.value) {
             (area.value as HTMLElement).childNodes.forEach(node => {
                 if (node.nodeType === 1) {
-                    const note = state.notes.find(n => n.id === (node as HTMLElement).id);
+                    const note = state.notes.find(n => n.id === (node as HTMLElement).dataset.id);
                     if (note && note.canvas) {
                         (node as HTMLElement).style.top = note.canvas.top;
                         (node as HTMLElement).style.left = note.canvas.left;
