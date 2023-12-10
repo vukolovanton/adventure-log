@@ -17,6 +17,9 @@
                     :data-id="note.id" :key="note.id">
                     <h4 class="title inner-padding">{{ note.title }}</h4>
                     <p class="content inner-padding">{{ note.description }}</p>
+                    <button :data-id-button="note.id" class="delete-note-canvas delete mini">
+                        <Delete :data-id-svg="note.id" />
+                    </button>
                 </div>
             </div>
         </vue-infinite-viewer>
@@ -32,6 +35,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import Target from "./icons/Target.vue";
 import Plus from "./icons/Plus.vue";
 import Minus from './icons/Minus.vue';
+import Delete from "./icons/Delete.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -39,14 +43,6 @@ const router = useRouter();
 interface IState {
     target: HTMLElement | null;
     notes: Note[];
-}
-
-const initial = {
-    useMouseDrag: true,
-    useWheelScroll: true,
-    useAutoZoom: true,
-    zoomRange: [0.1, 10],
-    maxPinchWheel: 10,
 }
 
 const zoom = ref(1);
@@ -81,7 +77,7 @@ function zoomOut() {
 
 function onDoubleClick(e: MouseEvent) {
     const target = (e.target as HTMLElement).offsetParent as HTMLElement;
-    if (target.dataset.id) {
+    if (target && target.dataset.id) {
         const note = state.notes.find(note => note.id === target.dataset.id);
         if (note) {
             store.note = note;
@@ -92,11 +88,40 @@ function onDoubleClick(e: MouseEvent) {
     }
 }
 
+async function handleDeleteNoteFromCanvas(id: string | undefined) {
+    if (!id) return;
+    const noteToDelete = state.notes.find(n => n.id === id);
+    if (noteToDelete) {
+        noteToDelete.canvas = null;
+        await invoke("save_note", {
+            ...noteToDelete,
+        });
+    }
+    const filtered = state.notes.filter(f => f.id !== id);
+    state.notes = filtered;
+}
+
 function onMouseDown(e: MouseEvent) {
     e.preventDefault();
     pos1.value = e.clientX;
     pos2.value = e.clientY;
-    state.target = (e.target as HTMLElement).offsetParent as HTMLElement;
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'BUTTON') {
+        const id = target.dataset.idButton;
+        handleDeleteNoteFromCanvas(id);
+        return;
+    }
+    if (target.tagName === 'path') {
+        const id = (target.parentNode as HTMLElement).dataset.idSvg;
+        handleDeleteNoteFromCanvas(id);
+        return;
+    }
+    if (target.tagName === 'svg') {
+        const id = target.dataset.idSvg;
+        handleDeleteNoteFromCanvas(id);
+        return;
+    }
+    state.target = target.offsetParent as HTMLElement;
     document.addEventListener('mousemove', elementDrag);
     document.addEventListener('mouseup', closeDragElement);
 }
@@ -126,15 +151,15 @@ async function updateNoteCanvasData(element: Element) {
             top: top,
             left: left,
         }
+
+        await invoke("save_note", {
+            ...note,
+        });
     }
-    await invoke("save_note", {
-        ...note,
-    });
 }
 
 function closeDragElement(e: MouseEvent) {
     const element = (e.target as HTMLElement)?.offsetParent;
-    console.log(element)
     if (element) {
         updateNoteCanvasData(element);
     }
@@ -238,5 +263,14 @@ onMounted(async () => {
 
 .inner-padding {
     padding: 0.5em;
+}
+
+.block:hover>.delete-note-canvas {
+    display: flex;
+}
+
+.delete-note-canvas {
+    display: none;
+    margin-left: auto;
 }
 </style>
