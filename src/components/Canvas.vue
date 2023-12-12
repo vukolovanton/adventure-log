@@ -218,6 +218,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.dropzone {}
+
 .area {
     position: relative;
 }
@@ -230,6 +232,7 @@ onMounted(async () => {
 }
 
 .viewer {
+    border-radius: var(--border-radius);
     width: 100%;
     height: 100%;
     background-color: #e5e5f7;

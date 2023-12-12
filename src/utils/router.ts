@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Settings from "../components/Settings.vue";
 import Editor from "../components/Editor.vue";
 import Canvas from "../components/Canvas.vue";
+import Tagmap from "../components/Tagmap.vue";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/canvas",
     name: "canvas",
     component: Canvas,
+  },
+  {
+    path: "/tagmap",
+    name: "tagmap",
+    component: Tagmap,
   },
 ];
 

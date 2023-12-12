@@ -3,8 +3,11 @@
         <button aria-label="Add new note" @click="handleAddNew" class="main">
             Add New
         </button>
-        <button @click="goToCanvas">
+        <button @click="goToTagMap">
             <Map />
+        </button>
+        <button @click="goToCanvas">
+            <Layers />
         </button>
         <button aria-label="Settings" @click="goToSettings" class="settings">
             <Gear />
@@ -16,6 +19,7 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import Gear from "./icons/Gear.vue";
 import Map from "./icons/Map.vue";
+import Layers from './icons/Layers.vue';
 import { useRouter } from "vue-router";
 import { store } from "../utils/store";
 
@@ -50,7 +54,11 @@ function goToSettings() {
 }
 
 function goToCanvas() {
-    router.push('/canvas')
+    router.push('/canvas');
+}
+
+function goToTagMap() {
+    router.push('/tagmap');
 }
 </script>
 

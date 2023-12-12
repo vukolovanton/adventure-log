@@ -28,8 +28,9 @@
     --yellow-color: #ffcd4d;
     --red-color: #ec5555;
     --border-radius: 6px;
+    --font-size-large: 24px;
     --font-size: 16px;
-    --font-size-small: 12px;
+    --font-size-small: 14px;
 }
 
 * {
@@ -43,6 +44,7 @@ button,
 textarea,
 input {
     font-size: var(--font-size);
+    outline: none;
 }
 
 @font-face {
@@ -51,5 +53,7 @@ input {
     font-style: normal;
     font-display: auto;
     unicode-range: U+000-5FF;
-    src: local("Alice"), url("./assets/Alice.ttf") format("truetype");
+    src:
+        local("Alice"),
+        url("./assets/Alice.ttf") format("truetype");
 }

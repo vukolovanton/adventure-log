@@ -180,6 +180,7 @@ onBeforeRouteUpdate(() => {
     display: flex;
     gap: 0.5em;
     margin-top: var(--small-gap);
+    flex-wrap: wrap;
 }
 
 .Editor {
@@ -192,6 +193,10 @@ onBeforeRouteUpdate(() => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--big-gap);
+
+    & input {
+        flex: 0.5;
+    }
 }
 
 .editor-actions {
